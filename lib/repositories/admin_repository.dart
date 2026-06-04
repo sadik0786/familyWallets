@@ -54,12 +54,14 @@ class AdminRepository {
             'display_name': 'Sadik Ali',
             'email': 'alisadik99@gmail.com',
             'role': 'super_admin',
+            'family_name': 'Ali Family',
             'created_at': DateTime.now().toIso8601String(),
           },
           {
             'display_name': 'Demo (Father)',
             'email': 'demo@familywallet.com',
             'role': 'user',
+            'family_name': 'Demo Household',
             'created_at': DateTime.now().toIso8601String(),
           }
         ],
@@ -89,6 +91,24 @@ class AdminRepository {
       return true;
     } catch (e) {
       debugPrint('[AdminRepository] Error toggling status: $e');
+      return false;
+    }
+  }
+
+  Future<bool> toggleFamilyPremium(String familyId, bool isPremium) async {
+    if (_supabase.isDemoMode) return true;
+
+    try {
+      await _supabase.client.rpc(
+        'toggle_family_premium',
+        params: {
+          'target_family_id': familyId,
+          'is_premium': isPremium,
+        },
+      );
+      return true;
+    } catch (e) {
+      debugPrint('[AdminRepository] Error toggling premium: $e');
       return false;
     }
   }

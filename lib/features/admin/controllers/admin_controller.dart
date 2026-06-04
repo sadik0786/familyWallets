@@ -49,6 +49,14 @@ class AdminController extends StateNotifier<AdminState> {
       fetchStats();
     }
   }
+
+  Future<void> toggleFamilyPremium(String familyId, bool isPremium) async {
+    final success = await _repository.toggleFamilyPremium(familyId, isPremium);
+    if (success) {
+      // Refresh the stats immediately to show the new status in the UI
+      fetchStats();
+    }
+  }
 }
 
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {

@@ -102,7 +102,9 @@ class ProfileView extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              context.tr('workspaceOwner', ref),
+                              profileState.members.any((m) => m.userId == authState.user?.id && m.role == 'admin')
+                                  ? 'WORKSPACE OWNER'
+                                  : 'WORKSPACE MEMBER',
                               style: const TextStyle(
                                 fontSize: 8,
                                 fontWeight: FontWeight.bold,
@@ -393,27 +395,6 @@ class ProfileView extends ConsumerWidget {
                                   .read(profileControllerProvider.notifier)
                                   .toggleTheme(val);
                             },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.notifications_outlined,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 12),
-                              Text(context.tr('budgetAlerts', ref)),
-                            ],
-                          ),
-                          Switch(
-                            value: true,
-                            activeThumbColor: AppColors.primaryCyan,
-                            onChanged: (val) {},
                           ),
                         ],
                       ),
