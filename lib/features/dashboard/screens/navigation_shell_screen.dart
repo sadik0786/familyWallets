@@ -118,9 +118,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                           Navigator.pop(context);
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => AddExpenseView(),
-                            ),
+                            MaterialPageRoute(builder: (_) => AddExpenseView()),
                           );
                         },
                         child: _buildQuickAddCard(
@@ -150,7 +148,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
   }) {
     return Container(
       padding: EdgeInsets.all(20.w),
-      height: 140,
+      height: 120.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: gradient,
@@ -173,7 +171,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -194,11 +192,14 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileControllerProvider);
     final isDark = profileState.isDarkMode;
-    
+
     // Check Active Status
     final family = profileState.family;
     final user = ref.watch(authControllerProvider).user;
-    final isSuperAdmin = user?.role == 'super_admin' || user?.email == 'alisadik99@gmail.com' || user?.email == 'admin@familywallet.com';
+    final isSuperAdmin =
+        user?.role == 'super_admin' ||
+        user?.email == 'alisadik99@gmail.com' ||
+        user?.email == 'admin@familywallet.com';
 
     if (family != null && !family.isActive && !isSuperAdmin) {
       return Theme(
@@ -209,7 +210,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
             padding: EdgeInsets.all(32.w),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: isDark 
+                colors: isDark
                     ? [AppColors.darkBackground, Color(0xFF14151F)]
                     : [AppColors.lightBackground, Colors.white],
                 begin: Alignment.topCenter,
@@ -219,7 +220,11 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.lock_outline_rounded, size: 80, color: AppColors.error),
+                Icon(
+                  Icons.lock_outline_rounded,
+                  size: 80,
+                  color: AppColors.error,
+                ),
                 SizedBox(height: 24.h),
                 Text(
                   'Workspace Suspended',
@@ -232,7 +237,11 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                 Text(
                   'Your family workspace subscription has expired or been suspended by the App Owner. Please renew your ₹500 yearly charge to regain access to your ledger.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 14.sp, height: 1.5),
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 14.sp,
+                    height: 1.5,
+                  ),
                 ),
                 SizedBox(height: 48.h),
                 OutlinedButton.icon(
@@ -242,7 +251,10 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                   icon: Icon(Icons.logout_rounded),
                   label: Text('Sign Out'),
                   style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 16.h,
+                    ),
                   ),
                 ),
               ],
@@ -279,7 +291,9 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
               });
               // Refresh data automatically when tabs are opened
               if (index == 4) {
-                ref.read(profileControllerProvider.notifier).loadFamilyAndMembers();
+                ref
+                    .read(profileControllerProvider.notifier)
+                    .loadFamilyAndMembers();
               }
             }
           },

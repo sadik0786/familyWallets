@@ -43,11 +43,13 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
     final List<Map<String, dynamic>> transactions = [];
 
     final filteredContributions = conState.contributions.where((c) {
-      return c.date.year == selectedMonth.year && c.date.month == selectedMonth.month;
+      return c.date.year == selectedMonth.year &&
+          c.date.month == selectedMonth.month;
     });
 
     final filteredExpenses = expState.expenses.where((e) {
-      return e.date.year == selectedMonth.year && e.date.month == selectedMonth.month;
+      return e.date.year == selectedMonth.year &&
+          e.date.month == selectedMonth.month;
     });
 
     for (final con in filteredContributions) {
@@ -143,7 +145,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                 child: Text(
                   context.tr('timelineTitle', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -151,10 +153,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
 
               // SEARCH BAR & FILTERS
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 8.0,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                 child: Column(
                   children: [
                     TextField(
@@ -166,16 +165,10 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                       },
                       decoration: InputDecoration(
                         hintText: context.tr('searchHint', ref),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
+                        prefixIcon: Icon(Icons.search, color: Colors.grey),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                                icon: Icon(
-                                  Icons.clear,
-                                  color: Colors.grey,
-                                ),
+                                icon: Icon(Icons.clear, color: Colors.grey),
                                 onPressed: () {
                                   _searchController.clear();
                                   setState(() {
@@ -265,9 +258,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                ),
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
                                   dateKey,
                                   style: GoogleFonts.outfit(
@@ -343,6 +334,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
+      height: 32.h,
       padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[800] : Colors.grey[300],
@@ -456,24 +448,36 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                             if (tx['payment_method'] != null)
                               Container(
                                 margin: EdgeInsets.only(left: 8),
-                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 6.w,
+                                  vertical: 2.h,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: tx['payment_method'] == 'cash' 
-                                    ? Colors.green.withValues(alpha: 0.1) 
-                                    : Colors.blue.withValues(alpha: 0.1),
+                                  color: tx['payment_method'] == 'cash'
+                                      ? Colors.green.withValues(alpha: 0.1)
+                                      : Colors.blue.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(4),
                                   border: Border.all(
-                                    color: tx['payment_method'] == 'cash' 
-                                      ? Colors.green.withValues(alpha: 0.3) 
-                                      : Colors.blue.withValues(alpha: 0.3),
+                                    color: tx['payment_method'] == 'cash'
+                                        ? Colors.green.withValues(alpha: 0.3)
+                                        : Colors.blue.withValues(alpha: 0.3),
                                   ),
                                 ),
                                 child: Text(
-                                  context.tr(tx['payment_method'].toString().toLowerCase(), ref).toUpperCase(),
+                                  context
+                                      .tr(
+                                        tx['payment_method']
+                                            .toString()
+                                            .toLowerCase(),
+                                        ref,
+                                      )
+                                      .toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 9.sp,
                                     fontWeight: FontWeight.bold,
-                                    color: tx['payment_method'] == 'cash' ? Colors.green : Colors.blue,
+                                    color: tx['payment_method'] == 'cash'
+                                        ? Colors.green
+                                        : Colors.blue,
                                   ),
                                 ),
                               ),
@@ -481,11 +485,24 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                         ),
                         SizedBox(height: 4),
                         DynamicTranslatedText(
-                          isOut 
-                            ? context.tr('addedByTemplate', ref)
-                                .replaceAll('{name}', tx['added_by_name']?.toString() ?? 'User')
-                                .replaceAll('{category}', context.tr(tx['category']?.toString().toLowerCase() ?? 'other', ref))
-                            : tx['note'] ?? context.tr('sharedMoneyLog', ref),
+                          isOut
+                              ? context
+                                    .tr('addedByTemplate', ref)
+                                    .replaceAll(
+                                      '{name}',
+                                      tx['added_by_name']?.toString() ?? 'User',
+                                    )
+                                    .replaceAll(
+                                      '{category}',
+                                      context.tr(
+                                        tx['category']
+                                                ?.toString()
+                                                .toLowerCase() ??
+                                            'other',
+                                        ref,
+                                      ),
+                                    )
+                              : tx['note'] ?? context.tr('sharedMoneyLog', ref),
                           style: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 12.sp,

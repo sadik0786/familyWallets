@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class HowToUseView extends ConsumerWidget {
   const HowToUseView({super.key});
@@ -14,14 +15,9 @@ class HowToUseView extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'How to use Family Wallet',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-        ),
+      appBar: const CustomAppBar(
+        title: 'How to use Family Wallet',
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       extendBodyBehindAppBar: true,
       body: Container(

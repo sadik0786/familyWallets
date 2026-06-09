@@ -213,15 +213,24 @@ class FamilyRepository {
     }
   }
 
-  Future<void> updateSubscriptionTier(String familyId, String tier) async {
+  Future<void> updateSubscriptionTier(String familyId, String tier, {int? durationDays}) async {
     if (_supabase.isDemoMode) {
-      await _localDb.updateRow('families', 'id', familyId, {'subscription_tier': tier});
+      final updateData = <String, dynamic>{'subscription_tier': tier};
+      if (tier == 'premium' && durationDays != null) {
+        updateData['premium_until'] = DateTime.now().add(Duration(days: durationDays)).toIso8601String();
+      }
+      await _localDb.updateRow('families', 'id', familyId, updateData);
       return;
     }
     try {
+      final updateData = <String, dynamic>{'subscription_tier': tier};
+      if (tier == 'premium' && durationDays != null) {
+        updateData['premium_until'] = DateTime.now().add(Duration(days: durationDays)).toIso8601String();
+      }
+
       final response = await _supabase.client
           .from('families')
-          .update({'subscription_tier': tier})
+          .update(updateData)
           .eq('id', familyId)
           .select()
           .maybeSingle();
@@ -231,7 +240,7 @@ class FamilyRepository {
       }
     } catch (e) {
       debugPrint('[FamilyRepository] Error updating subscription: $e');
-      throw Exception('Failed to update subscription tier: $e');
+      throw Exception(e.toString().replaceAll('Exception: ', ''));
     }
   }
 

@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../expenses/controllers/expense_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../../core/localization/translations.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class Message {
   final String text;
@@ -157,7 +158,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.tr('aiCoachTitle', ref))),
+      appBar: CustomAppBar(title: context.tr('aiCoachTitle', ref), centerTitle: true),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

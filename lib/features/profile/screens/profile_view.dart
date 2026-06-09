@@ -47,7 +47,7 @@ class ProfileView extends ConsumerWidget {
                 Text(
                   context.tr('profileWorkspace', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 24.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

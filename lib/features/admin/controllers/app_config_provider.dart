@@ -6,24 +6,25 @@ final adminRepositoryProvider = Provider<AdminRepository>((ref) {
 });
 
 class AppConfigState {
-  final String premiumPrice;
-  final String premiumDuration;
+  final Map<String, String> premiumPrices;
   final bool isLoading;
   
   AppConfigState({
-    this.premiumPrice = '500',
-    this.premiumDuration = '1 Year',
+    this.premiumPrices = const {
+      '1_month': '50',
+      '3_months': '140',
+      '6_months': '250',
+      '1_year': '500',
+    },
     this.isLoading = false,
   });
 
   AppConfigState copyWith({
-    String? premiumPrice,
-    String? premiumDuration,
+    Map<String, String>? premiumPrices,
     bool? isLoading,
   }) {
     return AppConfigState(
-      premiumPrice: premiumPrice ?? this.premiumPrice,
-      premiumDuration: premiumDuration ?? this.premiumDuration,
+      premiumPrices: premiumPrices ?? this.premiumPrices,
       isLoading: isLoading ?? this.isLoading,
     );
   }
@@ -38,28 +39,17 @@ class AppConfigController extends StateNotifier<AppConfigState> {
 
   Future<void> loadConfig() async {
     state = state.copyWith(isLoading: true);
-    final price = await _repository.getGlobalPremiumPrice();
-    final duration = await _repository.getGlobalPremiumDuration();
-    state = state.copyWith(premiumPrice: price, premiumDuration: duration, isLoading: false);
+    final prices = await _repository.getPremiumPrices();
+    state = state.copyWith(premiumPrices: prices, isLoading: false);
   }
 
-  Future<bool> updatePremiumPrice(String newPrice) async {
+  Future<bool> updatePremiumPrice(String planKey, String newPrice) async {
     state = state.copyWith(isLoading: true);
-    final success = await _repository.updateGlobalPremiumPrice(newPrice);
+    final success = await _repository.updatePremiumPrice(planKey, newPrice);
     if (success) {
-      state = state.copyWith(premiumPrice: newPrice, isLoading: false);
-      return true;
-    } else {
-      state = state.copyWith(isLoading: false);
-      return false;
-    }
-  }
-
-  Future<bool> updatePremiumDuration(String newDuration) async {
-    state = state.copyWith(isLoading: true);
-    final success = await _repository.updateGlobalPremiumDuration(newDuration);
-    if (success) {
-      state = state.copyWith(premiumDuration: newDuration, isLoading: false);
+      final updatedPrices = Map<String, String>.from(state.premiumPrices);
+      updatedPrices[planKey] = newPrice;
+      state = state.copyWith(premiumPrices: updatedPrices, isLoading: false);
       return true;
     } else {
       state = state.copyWith(isLoading: false);

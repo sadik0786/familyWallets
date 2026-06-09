@@ -164,13 +164,30 @@ class ProfileController extends StateNotifier<ProfileState> {
     }
   }
 
-  Future<void> upgradeSubscription() async {
+  Future<void> upgradeSubscription(String planKey) async {
     if (state.family == null) return;
     if (!mounted) return;
     state = state.copyWith(isLoading: true);
     try {
-      await _repository.updateSubscriptionTier(state.family!.id, 'premium');
+      int durationDays = 365; // Default to 1 year
+      if (planKey == '1_month') {
+        durationDays = 30;
+      } else if (planKey == '3_months') {
+        durationDays = 90;
+      } else if (planKey == '6_months') {
+        durationDays = 180;
+      } else if (planKey == '1_year') {
+        durationDays = 365;
+      }
+
+      await _repository.updateSubscriptionTier(
+        state.family!.id,
+        'premium',
+        durationDays: durationDays,
+      );
       final updatedFamily = state.family!.copyWith(subscriptionTier: 'premium');
+      // Note: In a real app we would also update the premiumUntil locally, but a refresh will fetch it anyway.
+
       if (!mounted) return;
       state = state.copyWith(family: updatedFamily, isLoading: false);
     } catch (e) {
@@ -185,7 +202,9 @@ class ProfileController extends StateNotifier<ProfileState> {
     try {
       await _repository.removeMember(state.family!.id, userId);
       // Remove from state list
-      final updatedMembers = state.members.where((m) => m.userId != userId).toList();
+      final updatedMembers = state.members
+          .where((m) => m.userId != userId)
+          .toList();
       if (!mounted) return;
       state = state.copyWith(members: updatedMembers, isLoading: false);
     } catch (e) {

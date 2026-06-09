@@ -8,42 +8,39 @@ import '../../../core/widgets/primary_button.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../../core/localization/translations.dart';
 import '../../admin/controllers/app_config_provider.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class PremiumSubscriptionScreen extends ConsumerStatefulWidget {
   const PremiumSubscriptionScreen({super.key});
 
   @override
-  ConsumerState<PremiumSubscriptionScreen> createState() => _PremiumSubscriptionScreenState();
+  ConsumerState<PremiumSubscriptionScreen> createState() =>
+      _PremiumSubscriptionScreenState();
 }
 
-class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionScreen> {
+class _PremiumSubscriptionScreenState
+    extends ConsumerState<PremiumSubscriptionScreen> {
   bool _isProcessing = false;
+  String _selectedPlanKey = '1_year';
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
-      appBar: AppBar(
-        title: Text(
-          context.tr('premiumPlan', ref),
-          style: GoogleFonts.outfit(fontSize: 20.sp, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black),
-        ),
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
+      appBar: CustomAppBar(
+        title: context.tr('premiumPlan', ref),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(24.0.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star_rounded,
-              color: AppColors.primaryPink,
-              size: 80,
-            ),
+            Icon(Icons.star_rounded, color: AppColors.primaryPink, size: 80),
             SizedBox(height: 16.h),
             Text(
               context.tr('upgradePremium', ref),
@@ -63,7 +60,7 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
             ),
             SizedBox(height: 40.h),
-            
+
             // Benefits List
             _buildBenefitItem(
               icon: Icons.auto_awesome_rounded,
@@ -89,107 +86,144 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               desc: context.tr('upTo10FamilyDesc', ref),
               color: AppColors.success,
             ),
-            
+
             SizedBox(height: 40.h),
-            
+
             // Pricing Box
-            Container(
-              padding: EdgeInsets.all(24.w),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primaryPink.withValues(alpha: 0.1),
-                    AppColors.primaryPurple.withValues(alpha: 0.1),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: AppColors.primaryPink.withValues(alpha: 0.3),
-                  width: 2,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final config = ref.watch(appConfigControllerProvider);
-                      return Text(
-                        '${config.premiumDuration} Plan',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryPink,
+            Consumer(
+              builder: (context, ref, child) {
+                final config = ref.watch(appConfigControllerProvider);
+
+                final plans = [
+                  {'key': '1_month', 'title': '1 Month', 'suffix': 'month'},
+                  {
+                    'key': '3_months',
+                    'title': '3 Months',
+                    'suffix': '3 months',
+                  },
+                  {
+                    'key': '6_months',
+                    'title': '6 Months',
+                    'suffix': '6 months',
+                  },
+                  {'key': '1_year', 'title': '1 Year', 'suffix': 'year'},
+                ];
+
+                return Column(
+                  children: plans.map((plan) {
+                    final isSelected = _selectedPlanKey == plan['key'];
+                    final price = config.premiumPrices[plan['key']] ?? '0';
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedPlanKey = plan['key'] as String;
+                        });
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 12.h),
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primaryPink.withValues(alpha: 0.1)
+                              : (isDark
+                                    ? AppColors.darkBackground
+                                    : Colors.white),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.primaryPink
+                                : (isDark
+                                      ? Colors.grey[800]!
+                                      : Colors.grey[300]!),
+                            width: 2,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final config = ref.watch(appConfigControllerProvider);
-                          return Text(
-                            '₹${config.premiumPrice}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 40.sp,
-                              fontWeight: FontWeight.bold,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              plan['title'] as String,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected
+                                    ? AppColors.primaryPink
+                                    : (isDark ? Colors.white : Colors.black),
+                              ),
                             ),
-                          );
-                        },
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '₹$price',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 24.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 4.0,
+                                    left: 4.0,
+                                  ),
+                                  child: Text(
+                                    '/ ${plan['suffix']}',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final config = ref.watch(appConfigControllerProvider);
-                          String durationSuffix = config.premiumDuration.toLowerCase();
-                          // e.g., '1 year' -> '/ 1 year'
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 8.0, left: 4.0),
-                            child: Text('/ $durationSuffix', style: TextStyle(color: Colors.grey)),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    );
+                  }).toList(),
+                );
+              },
             ),
-            
+
             SizedBox(height: 32.h),
-            
+
             PrimaryButton(
               text: context.tr('subscribeNow', ref),
               isLoading: _isProcessing,
               onPressed: () async {
                 setState(() => _isProcessing = true);
-                
+
                 // Simulate payment gateway delay
                 await Future.delayed(Duration(seconds: 2));
-                
+
                 if (!context.mounted) return;
-                
-                await ref.read(profileControllerProvider.notifier).upgradeSubscription();
-                
+
+                await ref
+                    .read(profileControllerProvider.notifier)
+                    .upgradeSubscription(_selectedPlanKey);
+
                 if (!context.mounted) return;
-                
+
                 setState(() => _isProcessing = false);
-                
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(context.tr('upgradeSuccess', ref)),
                     backgroundColor: AppColors.success,
                   ),
                 );
-                
+
                 context.pop(); // Go back to dashboard
               },
             ),
             SizedBox(height: 16.h),
             TextButton(
               onPressed: () => context.pop(),
-              child: Text(context.tr('maybeLater', ref), style: TextStyle(color: Colors.grey)),
+              child: Text(
+                context.tr('maybeLater', ref),
+                style: TextStyle(color: Colors.grey),
+              ),
             ),
           ],
         ),

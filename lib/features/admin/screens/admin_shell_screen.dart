@@ -8,6 +8,7 @@ import 'admin_users_view.dart';
 import 'admin_settings_view.dart';
 import '../controllers/admin_controller.dart';
 import '../../auth/controllers/auth_controller.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class AdminShellScreen extends ConsumerStatefulWidget {
   const AdminShellScreen({super.key});
@@ -35,16 +36,8 @@ class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
     ref.listen(adminControllerProvider, (prev, next) {});
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Super Admin',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
-            ),
-          ],
-        ),
+      appBar: CustomAppBar(
+        title: 'Super Admin',
         actions: [
           Container(
             margin: EdgeInsets.only(right: 16),

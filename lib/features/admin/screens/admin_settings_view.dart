@@ -14,7 +14,7 @@ class AdminSettingsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authControllerProvider).user;
 
-    return Padding(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(20.0.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,28 +62,6 @@ class AdminSettingsView extends ConsumerWidget {
                           fontSize: 14.sp,
                         ),
                       ),
-                      SizedBox(height: 8.h),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8.w,
-                          vertical: 4.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryCyan.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: AppColors.primaryCyan.withValues(alpha: 0.5),
-                          ),
-                        ),
-                        child: Text(
-                          'SUPER ADMIN',
-                          style: TextStyle(
-                            color: AppColors.primaryCyan,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -126,101 +104,36 @@ class AdminSettingsView extends ConsumerWidget {
                       ],
                     ),
                     SizedBox(height: 8.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            initialValue: configState.premiumPrice,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Premium Price',
-                              prefixText: '₹ ',
-                              hintText: 'e.g. 500',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 12.h,
-                              ),
-                            ),
-                            onFieldSubmitted: (value) async {
-                              if (value.trim().isEmpty) return;
-                              final success = await ref
-                                  .read(appConfigControllerProvider.notifier)
-                                  .updatePremiumPrice(value.trim());
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      success
-                                          ? 'Premium price updated globally.'
-                                          : 'Failed to update price.',
-                                    ),
-                                    backgroundColor: success
-                                        ? AppColors.success
-                                        : AppColors.error,
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: configState.premiumDuration,
-                            decoration: InputDecoration(
-                              labelText: 'Duration',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 12.h,
-                              ),
-                            ),
-                            items: const [
-                              DropdownMenuItem(
-                                value: '1 Month',
-                                child: Text('1 Month'),
-                              ),
-                              DropdownMenuItem(
-                                value: '3 Months',
-                                child: Text('3 Months'),
-                              ),
-                              DropdownMenuItem(
-                                value: '6 Months',
-                                child: Text('6 Months'),
-                              ),
-                              DropdownMenuItem(
-                                value: '1 Year',
-                                child: Text('1 Year'),
-                              ),
-                            ],
-                            onChanged: (value) async {
-                              if (value == null) return;
-                              final success = await ref
-                                  .read(appConfigControllerProvider.notifier)
-                                  .updatePremiumDuration(value);
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      success
-                                          ? 'Premium duration updated globally.'
-                                          : 'Failed to update duration.',
-                                    ),
-                                    backgroundColor: success
-                                        ? AppColors.success
-                                        : AppColors.error,
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ],
+                    _buildPriceRow(
+                      context,
+                      ref,
+                      configState,
+                      '1 Month Plan',
+                      '1_month',
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildPriceRow(
+                      context,
+                      ref,
+                      configState,
+                      '3 Months Plan',
+                      '3_months',
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildPriceRow(
+                      context,
+                      ref,
+                      configState,
+                      '6 Months Plan',
+                      '6_months',
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildPriceRow(
+                      context,
+                      ref,
+                      configState,
+                      '1 Year Plan',
+                      '1_year',
                     ),
                     SizedBox(height: 16.h),
                     Text(
@@ -239,11 +152,17 @@ class AdminSettingsView extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {
-                ref.read(authControllerProvider.notifier).logout();
-              },
               icon: Icon(Icons.logout_rounded, color: AppColors.error),
-              label: Text('Sign Out', style: TextStyle(color: AppColors.error)),
+              label: Text(
+                'Sign Out',
+                style: TextStyle(
+                  color: AppColors.error,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: () =>
+                  ref.read(authControllerProvider.notifier).logout(),
               style: OutlinedButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 side: BorderSide(color: AppColors.error),
@@ -255,6 +174,61 @@ class AdminSettingsView extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPriceRow(
+    BuildContext context,
+    WidgetRef ref,
+    AppConfigState configState,
+    String title,
+    String key,
+  ) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(title, style: TextStyle(fontSize: 14.sp)),
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          flex: 3,
+          child: TextFormField(
+            initialValue: configState.premiumPrices[key] ?? '0',
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixText: '₹ ',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 8.h,
+              ),
+            ),
+            onFieldSubmitted: (value) async {
+              if (value.trim().isEmpty) return;
+              final success = await ref
+                  .read(appConfigControllerProvider.notifier)
+                  .updatePremiumPrice(key, value.trim());
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      success
+                          ? '$title updated globally.'
+                          : 'Failed to update price.',
+                    ),
+                    backgroundColor: success
+                        ? AppColors.success
+                        : AppColors.error,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }

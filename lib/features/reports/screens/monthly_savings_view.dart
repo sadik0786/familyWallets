@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../controllers/monthly_savings_controller.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/localization/translations.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class MonthlySavingsView extends ConsumerWidget {
   const MonthlySavingsView({super.key});
@@ -23,14 +24,9 @@ class MonthlySavingsView extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr('savingsHistory', ref),
-          style: GoogleFonts.outfit(fontSize: 20.sp, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black),
-        ),
+      appBar: CustomAppBar(
+        title: context.tr('savingsHistory', ref),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       extendBodyBehindAppBar: true,
       body: Container(

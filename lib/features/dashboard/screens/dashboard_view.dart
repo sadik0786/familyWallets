@@ -303,419 +303,434 @@ class DashboardView extends ConsumerWidget {
                   ),
                   SizedBox(height: 16.h),
 
-                  // GLASS BALANCES CARD
-                  GlassCard(
-                    gradientColors: isDark
-                        ? [
-                            AppColors.primaryPurple.withValues(alpha: 0.2),
-                            AppColors.primaryCyan.withValues(alpha: 0.05),
-                          ]
-                        : [
-                            AppColors.primaryBlue.withValues(alpha: 0.1),
-                            Colors.white,
-                          ],
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              context.tr('remainingBalance', ref),
-                              style: GoogleFonts.outfit(
-                                fontSize: 14.sp,
-                                color: isDark
-                                    ? Colors.white70
-                                    : Colors.grey[600],
-                              ),
-                            ),
-                            SizedBox(width: 4.w),
-                            InkWell(
-                              onTap: () {
-                                context.push('/monthly-savings');
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryCyan.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  context.tr('history', ref),
-                                  style: TextStyle(
-                                    fontSize: 10.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryCyan,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 6.h),
-                        AnimatedCounter(
-                          value: dashboardData.remainingBalance,
-                          style: GoogleFonts.outfit(
-                            fontSize: 36.sp,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? Colors.white : Color(0xFF0F172A),
+                  if (dashboardData.isLoading)
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 100.h),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.primaryPurple,
                           ),
                         ),
-                        SizedBox(height: 24.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildBalanceItem(
-                                title: context.tr('totalContributions', ref),
-                                amount: dashboardData.totalContributions,
-                                icon: Icons.arrow_downward_rounded,
-                                color: AppColors.success,
-                              ),
-                            ),
-                            Container(
-                              width: 1,
-                              height: 40,
-                              color: Colors.grey.withValues(alpha: 0.3),
-                            ),
-                            Expanded(
-                              child: _buildBalanceItem(
-                                title: context.tr('totalExpenses', ref),
-                                amount: dashboardData.totalExpenses,
-                                icon: Icons.arrow_upward_rounded,
-                                color: AppColors.error,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16.h),
-                        // CASH VS ONLINE BREAKDOWN
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? Colors.black.withValues(alpha: 0.2)
-                                : Colors.white.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      ),
+                    )
+                  else ...[
+                    // GLASS BALANCES CARD
+                    GlassCard(
+                      gradientColors: isDark
+                          ? [
+                              AppColors.primaryPurple.withValues(alpha: 0.2),
+                              AppColors.primaryCyan.withValues(alpha: 0.05),
+                            ]
+                          : [
+                              AppColors.primaryBlue.withValues(alpha: 0.1),
+                              Colors.white,
+                            ],
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.money_rounded,
-                                        size: 14,
-                                        color: Colors.green,
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      Text(
-                                        context.tr('cashSpent', ref),
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.grey[600],
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
+                              Text(
+                                context.tr('remainingBalance', ref),
+                                style: GoogleFonts.outfit(
+                                  fontSize: 14.sp,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : Colors.grey[600],
+                                ),
+                              ),
+                              SizedBox(width: 4.w),
+                              InkWell(
+                                onTap: () {
+                                  context.push('/monthly-savings');
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
                                   ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    '₹${dashboardData.cashSpent.toStringAsFixed(2)}',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 16.sp,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryCyan.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    context.tr('history', ref),
+                                    style: TextStyle(
+                                      fontSize: 10.sp,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+                                      color: AppColors.primaryCyan,
                                     ),
                                   ),
-                                ],
-                              ),
-                              Container(
-                                width: 1,
-                                height: 30,
-                                color: Colors.grey.withValues(alpha: 0.3),
-                              ),
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.account_balance_wallet_rounded,
-                                        size: 14,
-                                        color: Colors.blue,
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      Text(
-                                        context.tr('onlineSpent', ref),
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.grey[600],
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    '₹${dashboardData.onlineSpent.toStringAsFixed(2)}',
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // QUICK ACTIONS HORIZONTAL SCRoll
-                  Text(
-                    context.tr('quickTools', ref),
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildQuickToolItem(
-                          context: context,
-                          icon: Icons.psychology_rounded,
-                          label: context.tr('aiChat', ref),
-                          color: AppColors.primaryPurple,
-                          isLocked: !isPremium,
-                          onTap: () {
-                            if (isPremium) {
-                              context.push('/ai-chat');
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'AI Assistant is a Premium feature. You are not eligible.',
-                                    style: GoogleFonts.outfit(),
-                                  ),
-                                  backgroundColor: AppColors.error,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        _buildQuickToolItem(
-                          context: context,
-                          icon: Icons.document_scanner_rounded,
-                          label: context.tr('scanReceipt', ref),
-                          color: AppColors.primaryCyan,
-                          isLocked: !isPremium,
-                          onTap: () {
-                            if (isPremium) {
-                              context.push('/ocr-scanner');
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'OCR Scan is a Premium feature. You are not eligible.',
-                                    style: GoogleFonts.outfit(),
-                                  ),
-                                  backgroundColor: AppColors.error,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        _buildQuickToolItem(
-                          context: context,
-                          icon: Icons.qr_code_rounded,
-                          label: 'Invite Code',
-                          color: AppColors.primaryBlue,
-                          onTap: () {
-                            if (profileState.family != null) {
-                              Clipboard.setData(
-                                ClipboardData(
-                                  text: profileState.family!.inviteCode,
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${context.tr('copied', ref)} (Family ID: ${profileState.family!.inviteCode})',
-                                  ),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.tr('notInFamilyPrompt', ref),
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        _buildQuickToolItem(
-                          context: context,
-                          icon: Icons.star_rounded,
-                          label: context.tr('goPremium', ref),
-                          color: AppColors.primaryPink,
-                          onTap: () {
-                            context.push('/premium');
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // SPENDING CHARTS VISUALIZATION
-                  Text(
-                    context.tr('monthlySpendingBreakdown', ref),
-                    style: GoogleFonts.outfit(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  GlassCard(
-                    child: dashboardData.categoryBreakdown.isEmpty
-                        ? SizedBox(
-                            height: 160.h,
-                            child: Center(
-                              child: Text(
-                                'No expenses registered yet.',
-                                style: TextStyle(color: Colors.grey),
-                              ),
+                          SizedBox(height: 6.h),
+                          AnimatedCounter(
+                            value: dashboardData.remainingBalance,
+                            style: GoogleFonts.outfit(
+                              fontSize: 36.sp,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Color(0xFF0F172A),
                             ),
-                          )
-                        : SizedBox(
-                            height: 200.h,
+                          ),
+                          SizedBox(height: 24.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildBalanceItem(
+                                  title: context.tr('totalContributions', ref),
+                                  amount: dashboardData.totalContributions,
+                                  icon: Icons.arrow_downward_rounded,
+                                  color: AppColors.success,
+                                ),
+                              ),
+                              Container(
+                                width: 1,
+                                height: 40,
+                                color: Colors.grey.withValues(alpha: 0.3),
+                              ),
+                              Expanded(
+                                child: _buildBalanceItem(
+                                  title: context.tr('totalExpenses', ref),
+                                  amount: dashboardData.totalExpenses,
+                                  icon: Icons.arrow_upward_rounded,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16.h),
+                          // CASH VS ONLINE BREAKDOWN
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.black.withValues(alpha: 0.2)
+                                  : Colors.white.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: PieChart(
-                                    PieChartData(
-                                      sectionsSpace: 2,
-                                      centerSpaceRadius: 35,
-                                      sections: _getPieChartSections(
-                                        dashboardData.categoryBreakdown,
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.money_rounded,
+                                          size: 14,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          context.tr('cashSpent', ref),
+                                          style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      '₹${dashboardData.cashSpent.toStringAsFixed(2)}',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                SizedBox(width: 16.w),
-                                Expanded(
-                                  flex: 2,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: dashboardData
-                                          .categoryBreakdown
-                                          .entries
-                                          .map((e) {
-                                            return _buildChartLegendItem(
-                                              e.key,
-                                              AppColors.getCategoryColor(e.key),
-                                            );
-                                          })
-                                          .toList(),
+                                Container(
+                                  width: 1,
+                                  height: 30,
+                                  color: Colors.grey.withValues(alpha: 0.3),
+                                ),
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.account_balance_wallet_rounded,
+                                          size: 14,
+                                          color: Colors.blue,
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          context.tr('onlineSpent', ref),
+                                          style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: Colors.grey[600],
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      '₹${dashboardData.onlineSpent.toStringAsFixed(2)}',
+                                      style: GoogleFonts.outfit(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // RECENT ACTIVITIES TIMELINE
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        context.tr('recentActivity', ref),
-                        style: GoogleFonts.outfit(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: onSeeAllTapped,
-                        child: Text(
-                          context.tr('seeAll', ref),
-                          style: TextStyle(
-                            color: isDark
-                                ? AppColors.primaryCyan
-                                : AppColors.primaryBlue,
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // QUICK ACTIONS HORIZONTAL SCRoll
+                    Text(
+                      context.tr('quickTools', ref),
+                      style: GoogleFonts.outfit(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildQuickToolItem(
+                            context: context,
+                            icon: Icons.psychology_rounded,
+                            label: context.tr('aiChat', ref),
+                            color: AppColors.primaryPurple,
+                            isLocked: !isPremium,
+                            onTap: () {
+                              if (isPremium) {
+                                context.push('/ai-chat');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'AI Assistant is a Premium feature. You are not eligible.',
+                                      style: GoogleFonts.outfit(),
+                                    ),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          _buildQuickToolItem(
+                            context: context,
+                            icon: Icons.document_scanner_rounded,
+                            label: context.tr('scanReceipt', ref),
+                            color: AppColors.primaryCyan,
+                            isLocked: !isPremium,
+                            onTap: () {
+                              if (isPremium) {
+                                context.push('/ocr-scanner');
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'OCR Scan is a Premium feature. You are not eligible.',
+                                      style: GoogleFonts.outfit(),
+                                    ),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          _buildQuickToolItem(
+                            context: context,
+                            icon: Icons.qr_code_rounded,
+                            label: 'Invite Code',
+                            color: AppColors.primaryBlue,
+                            onTap: () {
+                              if (profileState.family != null) {
+                                Clipboard.setData(
+                                  ClipboardData(
+                                    text: profileState.family!.inviteCode,
+                                  ),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      '${context.tr('copied', ref)} (Family ID: ${profileState.family!.inviteCode})',
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.tr('notInFamilyPrompt', ref),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          _buildQuickToolItem(
+                            context: context,
+                            icon: Icons.star_rounded,
+                            label: context.tr('goPremium', ref),
+                            color: AppColors.primaryPink,
+                            onTap: () {
+                              context.push('/premium');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // SPENDING CHARTS VISUALIZATION
+                    Text(
+                      context.tr('monthlySpendingBreakdown', ref),
+                      style: GoogleFonts.outfit(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    GlassCard(
+                      child: dashboardData.categoryBreakdown.isEmpty
+                          ? SizedBox(
+                              height: 160.h,
+                              child: Center(
+                                child: Text(
+                                  'No expenses registered yet.',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: 200.h,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: PieChart(
+                                      PieChartData(
+                                        sectionsSpace: 2,
+                                        centerSpaceRadius: 35,
+                                        sections: _getPieChartSections(
+                                          dashboardData.categoryBreakdown,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 16.w),
+                                  Expanded(
+                                    flex: 2,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: dashboardData
+                                            .categoryBreakdown
+                                            .entries
+                                            .map((e) {
+                                              return _buildChartLegendItem(
+                                                e.key,
+                                                AppColors.getCategoryColor(
+                                                  e.key,
+                                                ),
+                                              );
+                                            })
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // RECENT ACTIVITIES TIMELINE
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.tr('recentActivity', ref),
+                          style: GoogleFonts.outfit(
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        TextButton(
+                          onPressed: onSeeAllTapped,
+                          child: Text(
+                            context.tr('seeAll', ref),
+                            style: TextStyle(
+                              color: isDark
+                                  ? AppColors.primaryCyan
+                                  : AppColors.primaryBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+
+                    if (dashboardData.recentExpenses.isEmpty &&
+                        dashboardData.recentContributions.isEmpty)
+                      EmptyStateView(
+                        title: 'No recent transactions',
+                        description:
+                            'Taps the + button to log contributions and expenses dynamically.',
+                        icon: Icons.description_outlined,
+                      )
+                    else ...[
+                      ...dashboardData.recentExpenses.map(
+                        (e) => _buildRecentActivityRow(
+                          context: context,
+                          ref: ref,
+                          title:
+                              e.description ??
+                              context.tr(e.category.toLowerCase(), ref),
+                          subtitle: context
+                              .tr('addedByTemplate', ref)
+                              .replaceAll('{name}', e.addedByName)
+                              .replaceAll(
+                                '{category}',
+                                context.tr(e.category.toLowerCase(), ref),
+                              ),
+                          amount: '- ₹${e.amount.toStringAsFixed(2)}',
+                          color: AppColors.error,
+                          icon: AppColors.getCategoryIcon(e.category),
+                          paymentMethod: e.paymentMethod,
+                        ),
+                      ),
+                      ...dashboardData.recentContributions.map(
+                        (c) => _buildRecentActivityRow(
+                          context: context,
+                          ref: ref,
+                          title: context
+                              .tr('contributionTemplate', ref)
+                              .replaceAll('{name}', c.contributorName),
+                          subtitle: c.note ?? context.tr('sharedMoneyLog', ref),
+                          amount: '+ ₹${c.amount.toStringAsFixed(2)}',
+                          color: AppColors.success,
+                          icon: Icons.savings_rounded,
+                        ),
                       ),
                     ],
-                  ),
-                  SizedBox(height: 8.h),
-
-                  if (dashboardData.recentExpenses.isEmpty &&
-                      dashboardData.recentContributions.isEmpty)
-                    EmptyStateView(
-                      title: 'No recent transactions',
-                      description:
-                          'Taps the + button to log contributions and expenses dynamically.',
-                      icon: Icons.description_outlined,
-                    )
-                  else ...[
-                    ...dashboardData.recentExpenses.map(
-                      (e) => _buildRecentActivityRow(
-                        context: context,
-                        ref: ref,
-                        title:
-                            e.description ??
-                            context.tr(e.category.toLowerCase(), ref),
-                        subtitle: context
-                            .tr('addedByTemplate', ref)
-                            .replaceAll('{name}', e.addedByName)
-                            .replaceAll(
-                              '{category}',
-                              context.tr(e.category.toLowerCase(), ref),
-                            ),
-                        amount: '- ₹${e.amount.toStringAsFixed(2)}',
-                        color: AppColors.error,
-                        icon: AppColors.getCategoryIcon(e.category),
-                        paymentMethod: e.paymentMethod,
-                      ),
-                    ),
-                    ...dashboardData.recentContributions.map(
-                      (c) => _buildRecentActivityRow(
-                        context: context,
-                        ref: ref,
-                        title: context
-                            .tr('contributionTemplate', ref)
-                            .replaceAll('{name}', c.contributorName),
-                        subtitle: c.note ?? context.tr('sharedMoneyLog', ref),
-                        amount: '+ ₹${c.amount.toStringAsFixed(2)}',
-                        color: AppColors.success,
-                        icon: Icons.savings_rounded,
-                      ),
-                    ),
                   ],
                 ],
               ),
@@ -915,7 +930,9 @@ class DashboardView extends ConsumerWidget {
                                 ),
                               ),
                               child: Text(
-                                context.tr(paymentMethod.toLowerCase(), ref).toUpperCase(),
+                                context
+                                    .tr(paymentMethod.toLowerCase(), ref)
+                                    .toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 9.sp,
                                   fontWeight: FontWeight.bold,

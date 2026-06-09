@@ -10,6 +10,7 @@ import '../../auth/controllers/auth_controller.dart';
 import '../../../services/speech_to_text_service.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/localization/translations.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../profile/controllers/profile_controller.dart';
 
@@ -205,18 +206,9 @@ class _AddExpenseViewState extends ConsumerState<AddExpenseView> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr('addSharedExpense', ref),
-          style: GoogleFonts.outfit(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
+      appBar: CustomAppBar(
+        title: context.tr('addSharedExpense', ref),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
       body: Container(
         decoration: BoxDecoration(

@@ -8,6 +8,7 @@ import '../../../core/widgets/primary_button.dart';
 import '../controllers/contribution_controller.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../../core/localization/translations.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class AddContributionView extends ConsumerStatefulWidget {
   const AddContributionView({super.key});
@@ -92,7 +93,7 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: Text(context.tr('addFamilyContribution', ref))),
+      appBar: CustomAppBar(title: context.tr('addFamilyContribution', ref), centerTitle: true),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

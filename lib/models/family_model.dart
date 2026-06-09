@@ -6,6 +6,7 @@ class FamilyModel {
   final String subscriptionTier; // 'free' or 'premium'
   final bool isActive;
   final DateTime createdAt;
+  final DateTime? premiumUntil;
 
   FamilyModel({
     required this.id,
@@ -15,6 +16,7 @@ class FamilyModel {
     this.subscriptionTier = 'free',
     this.isActive = true,
     required this.createdAt,
+    this.premiumUntil,
   });
 
   factory FamilyModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,9 @@ class FamilyModel {
       createdAt: json['created_at'] != null 
           ? DateTime.parse(json['created_at'] as String) 
           : DateTime.now(),
+      premiumUntil: json['premium_until'] != null
+          ? DateTime.parse(json['premium_until'] as String)
+          : null,
     );
   }
 
@@ -40,6 +45,7 @@ class FamilyModel {
       'subscription_tier': subscriptionTier,
       'is_active': isActive,
       'created_at': createdAt.toIso8601String(),
+      if (premiumUntil != null) 'premium_until': premiumUntil!.toIso8601String(),
     };
   }
 
@@ -51,6 +57,7 @@ class FamilyModel {
     String? subscriptionTier,
     bool? isActive,
     DateTime? createdAt,
+    DateTime? premiumUntil,
   }) {
     return FamilyModel(
       id: id ?? this.id,
@@ -60,6 +67,7 @@ class FamilyModel {
       subscriptionTier: subscriptionTier ?? this.subscriptionTier,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
+      premiumUntil: premiumUntil ?? this.premiumUntil,
     );
   }
 }

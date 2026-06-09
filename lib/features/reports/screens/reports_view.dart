@@ -14,6 +14,7 @@ import '../../../services/ai_insights_service.dart';
 import '../../../services/pdf_service.dart';
 import '../../../core/localization/translations.dart';
 import '../../../core/widgets/fade_in_slide.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class ReportsView extends ConsumerStatefulWidget {
   const ReportsView({super.key});
@@ -98,19 +99,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr('reportsTitle', ref),
-          style: GoogleFonts.outfit(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: CustomAppBar(title: context.tr('reportsTitle', ref)),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -231,7 +220,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                         return PieChartSectionData(
                                           color: color,
                                           value: item.value,
-                                          title: percentage > 5
+                                          title: percentage > 0
                                               ? '${percentage.toStringAsFixed(0)}%'
                                               : '',
                                           radius: radius,
