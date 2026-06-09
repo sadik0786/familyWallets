@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
@@ -37,11 +38,16 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
             _currentIndex = 4;
           });
         },
+        onSeeAllTapped: () {
+          setState(() {
+            _currentIndex = 1;
+          });
+        },
       ),
-      const ExpensesTimelineView(),
-      const SizedBox.shrink(), // Placeholder for quick add tab
-      const ReportsView(),
-      const ProfileView(),
+      ExpensesTimelineView(),
+      SizedBox.shrink(), // Placeholder for quick add tab
+      ReportsView(),
+      ProfileView(),
     ];
   }
 
@@ -53,10 +59,10 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
       isScrollControlled: true,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 20),
+          padding: EdgeInsets.only(bottom: 20),
           child: GlassCard(
             borderRadius: 32,
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -68,20 +74,20 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
                 Text(
                   context.tr('quickAction', ref),
                   style: Theme.of(
                     context,
                   ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
                 Text(
                   context.tr('selectTxTypePrompt', ref),
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                  style: TextStyle(color: Colors.grey[500], fontSize: 13.sp),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
                 Row(
                   children: [
                     // LOG CONTRIBUTION
@@ -92,7 +98,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const AddContributionView(),
+                              builder: (_) => AddContributionView(),
                             ),
                           );
                         },
@@ -104,7 +110,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     // LOG EXPENSE
                     Expanded(
                       child: GestureDetector(
@@ -113,7 +119,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const AddExpenseView(),
+                              builder: (_) => AddExpenseView(),
                             ),
                           );
                         },
@@ -127,7 +133,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
               ],
             ),
           ),
@@ -143,7 +149,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
     required Gradient gradient,
   }) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       height: 140,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
@@ -152,7 +158,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
           BoxShadow(
             color: gradient.colors.first.withValues(alpha: 0.3),
             blurRadius: 16,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
@@ -166,16 +172,16 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: 2.h),
               Text(
                 subtitle,
-                style: const TextStyle(fontSize: 11, color: Colors.white70),
+                style: TextStyle(fontSize: 11.sp, color: Colors.white70),
               ),
             ],
           ),
@@ -200,11 +206,11 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
         child: Scaffold(
           body: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32.w),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: isDark 
-                    ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                    ? [AppColors.darkBackground, Color(0xFF14151F)]
                     : [AppColors.lightBackground, Colors.white],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -213,30 +219,30 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.lock_outline_rounded, size: 80, color: AppColors.error),
-                const SizedBox(height: 24),
+                Icon(Icons.lock_outline_rounded, size: 80, color: AppColors.error),
+                SizedBox(height: 24.h),
                 Text(
                   'Workspace Suspended',
                   style: GoogleFonts.outfit(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 Text(
                   'Your family workspace subscription has expired or been suspended by the App Owner. Please renew your ₹500 yearly charge to regain access to your ledger.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey[500], fontSize: 14, height: 1.5),
+                  style: TextStyle(color: Colors.grey[500], fontSize: 14.sp, height: 1.5),
                 ),
-                const SizedBox(height: 48),
+                SizedBox(height: 48.h),
                 OutlinedButton.icon(
                   onPressed: () {
                     ref.read(authControllerProvider.notifier).logout();
                   },
-                  icon: const Icon(Icons.logout_rounded),
-                  label: const Text('Sign Out'),
+                  icon: Icon(Icons.logout_rounded),
+                  label: Text('Sign Out'),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                   ),
                 ),
               ],
@@ -259,7 +265,7 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
                   SnackBar(
                     content: Text(
                       'Please create or join a family workspace first in the Profile tab.',
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white),
                     ),
                     backgroundColor: Colors.orange,
                   ),
@@ -279,16 +285,16 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
           },
           items: [
             BottomNavigationBarItem(
-              icon: const Icon(Icons.dashboard_outlined),
-              activeIcon: const Icon(Icons.dashboard_rounded),
+              icon: Icon(Icons.dashboard_outlined),
+              activeIcon: Icon(Icons.dashboard_rounded),
               label: context.tr('home', ref),
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.receipt_long_outlined),
-              activeIcon: const Icon(Icons.receipt_long_rounded),
+              icon: Icon(Icons.receipt_long_outlined),
+              activeIcon: Icon(Icons.receipt_long_rounded),
               label: context.tr('ledger', ref),
             ),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
               icon: CircleAvatar(
                 radius: 20,
                 backgroundColor: AppColors.primaryPurple,
@@ -297,13 +303,13 @@ class _NavigationShellScreenState extends ConsumerState<NavigationShellScreen> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.bar_chart_outlined),
-              activeIcon: const Icon(Icons.bar_chart_rounded),
+              icon: Icon(Icons.bar_chart_outlined),
+              activeIcon: Icon(Icons.bar_chart_rounded),
               label: context.tr('reportsTab', ref),
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.person_outline_rounded),
-              activeIcon: const Icon(Icons.person_rounded),
+              icon: Icon(Icons.person_outline_rounded),
+              activeIcon: Icon(Icons.person_rounded),
               label: context.tr('profileTab', ref),
             ),
           ],

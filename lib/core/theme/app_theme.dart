@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
@@ -11,7 +12,7 @@ class AppTheme {
       brightness: Brightness.light,
       primaryColor: AppColors.primaryBlue,
       scaffoldBackgroundColor: AppColors.lightBackground,
-      colorScheme: const ColorScheme.light(
+      colorScheme: ColorScheme.light(
         primary: AppColors.primaryBlue,
         secondary: AppColors.primaryPink,
         surface: AppColors.lightSurface,
@@ -25,16 +26,16 @@ class AppTheme {
           .copyWith(
             titleLarge: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF0F172A),
+              color: Color(0xFF0F172A),
             ),
             titleMedium: GoogleFonts.outfit(
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF334155),
+              color: Color(0xFF334155),
             ),
-            bodyLarge: GoogleFonts.outfit(color: const Color(0xFF334155)),
-            bodyMedium: GoogleFonts.outfit(color: const Color(0xFF475569)),
+            bodyLarge: GoogleFonts.outfit(color: Color(0xFF334155)),
+            bodyMedium: GoogleFonts.outfit(color: Color(0xFF475569)),
           ),
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         color: AppColors.lightCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -47,13 +48,13 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: GoogleFonts.outfit(
-          fontSize: 20,
+          fontSize: 20.sp,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF0F172A),
+          color: Color(0xFF0F172A),
         ),
-        iconTheme: const IconThemeData(color: Color(0xFF0F172A)),
+        iconTheme: IconThemeData(color: Color(0xFF0F172A)),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.lightSurface,
         selectedItemColor: AppColors.primaryBlue,
         unselectedItemColor: Color(0xFF94A3B8),
@@ -71,7 +72,7 @@ class AppTheme {
       brightness: Brightness.dark,
       primaryColor: AppColors.primaryPurple,
       scaffoldBackgroundColor: AppColors.darkBackground,
-      colorScheme: const ColorScheme.dark(
+      colorScheme: ColorScheme.dark(
         primary: AppColors.primaryPurple,
         secondary: AppColors.primaryCyan,
         surface: AppColors.darkSurface,
@@ -85,16 +86,16 @@ class AppTheme {
           .copyWith(
             titleLarge: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
-              color: const Color(0xFFF8FAFC),
+              color: Color(0xFFF8FAFC),
             ),
             titleMedium: GoogleFonts.outfit(
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFE2E8F0),
+              color: Color(0xFFE2E8F0),
             ),
-            bodyLarge: GoogleFonts.outfit(color: const Color(0xFFE2E8F0)),
-            bodyMedium: GoogleFonts.outfit(color: const Color(0xFF94A3B8)),
+            bodyLarge: GoogleFonts.outfit(color: Color(0xFFE2E8F0)),
+            bodyMedium: GoogleFonts.outfit(color: Color(0xFF94A3B8)),
           ),
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         color: AppColors.darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -107,13 +108,13 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
         titleTextStyle: GoogleFonts.outfit(
-          fontSize: 20,
+          fontSize: 20.sp,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFFF8FAFC),
+          color: Color(0xFFF8FAFC),
         ),
-        iconTheme: const IconThemeData(color: Color(0xFFF8FAFC)),
+        iconTheme: IconThemeData(color: Color(0xFFF8FAFC)),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,
         selectedItemColor: AppColors.primaryCyan,
         unselectedItemColor: Color(0xFF64748B),

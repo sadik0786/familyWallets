@@ -61,6 +61,7 @@ class ExpenseController extends StateNotifier<ExpenseState> {
     required String addedByName,
     required String? addedBy,
     required String? receiptUrl,
+    required String? paymentMethod,
   }) async {
     if (_familyId == null) return false;
     state = state.copyWith(isLoading: true);
@@ -75,6 +76,7 @@ class ExpenseController extends StateNotifier<ExpenseState> {
         addedBy: addedBy,
         addedByName: addedByName,
         receiptUrl: receiptUrl,
+        paymentMethod: paymentMethod,
         createdAt: DateTime.now(),
       );
 

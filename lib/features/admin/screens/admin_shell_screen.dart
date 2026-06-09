@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
@@ -18,7 +19,7 @@ class AdminShellScreen extends ConsumerStatefulWidget {
 class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
+  final List<Widget> _pages =  [
     AdminDashboardView(),
     AdminFamiliesView(),
     AdminUsersView(),
@@ -38,16 +39,16 @@ class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Super Admin',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.sp),
             ),
           ],
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            margin: EdgeInsets.only(right: 16),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
             decoration: BoxDecoration(
               color: AppColors.primaryCyan.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
@@ -62,7 +63,7 @@ class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
                   style: TextStyle(
                     color: AppColors.primaryCyan,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],
@@ -74,7 +75,7 @@ class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -94,7 +95,7 @@ class _AdminShellScreenState extends ConsumerState<AdminShellScreen> {
           }
         },
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items:  [
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             activeIcon: Icon(Icons.bar_chart_rounded),

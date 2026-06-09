@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 
 class EmptyStateView extends StatelessWidget {
@@ -21,14 +22,14 @@ class EmptyStateView extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(32.0),
+      padding: EdgeInsets.all(32.0.w),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isDark
@@ -41,7 +42,7 @@ class EmptyStateView extends StatelessWidget {
                 color: isDark ? Colors.grey[400] : Colors.grey[500],
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               title,
               textAlign: TextAlign.center,
@@ -49,7 +50,7 @@ class EmptyStateView extends StatelessWidget {
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               description,
               textAlign: TextAlign.center,
@@ -58,13 +59,13 @@ class EmptyStateView extends StatelessWidget {
               ),
             ),
             if (actionText != null && onActionPressed != null) ...[
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               OutlinedButton.icon(
                 onPressed: onActionPressed,
-                icon: const Icon(Icons.add),
+                icon: Icon(Icons.add),
                 label: Text(actionText!),
                 style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,
                   ),

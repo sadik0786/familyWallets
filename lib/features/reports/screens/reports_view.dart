@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,6 +35,24 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
 
     final familyName = profileState.family?.name ?? 'Demo Household';
     final subscriptionTier = profileState.family?.subscriptionTier ?? 'free';
+    final selectedMonth = ref.watch(selectedMonthProvider);
+
+    final monthNames = [
+      context.tr('jan', ref),
+      context.tr('feb', ref),
+      context.tr('mar', ref),
+      context.tr('apr', ref),
+      context.tr('may', ref),
+      context.tr('jun', ref),
+      context.tr('jul', ref),
+      context.tr('aug', ref),
+      context.tr('sep', ref),
+      context.tr('oct', ref),
+      context.tr('nov', ref),
+      context.tr('dec', ref),
+    ];
+    final selectedMonthName = monthNames[selectedMonth.month - 1];
+    final formattedMonthYear = '$selectedMonthName ${selectedMonth.year}';
 
     // Group expenses by category
     final categoryTotals = <String, double>{};
@@ -70,7 +89,11 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
       appBar: AppBar(
         title: Text(
           context.tr('reportsTitle', ref),
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          style: GoogleFonts.outfit(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -80,7 +103,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -97,7 +120,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                         size: 80,
                         color: Colors.grey.withValues(alpha: 0.3),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         'No data to generate reports.',
                         style: TextStyle(color: Colors.grey[500]),
@@ -107,7 +130,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                 )
               : FadeInSlide(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(20.0.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -116,7 +139,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                           children: [
                             Expanded(
                               child: _buildSummaryCard(
-                                title: 'Total Spend',
+                                title: context.tr('totalSpend', ref),
                                 amount:
                                     '₹${dashboardData.totalExpenses.toStringAsFixed(0)}',
                                 icon: Icons.arrow_upward_rounded,
@@ -124,10 +147,10 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                 isDark: isDark,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             Expanded(
                               child: _buildSummaryCard(
-                                title: 'Remaining',
+                                title: context.tr('remaining', ref),
                                 amount:
                                     '₹${dashboardData.remainingBalance.toStringAsFixed(0)}',
                                 icon: Icons.account_balance_wallet_rounded,
@@ -137,22 +160,21 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
 
                         // PIE CHART SECTION
                         Text(
-                          'Category Breakdown',
+                          context.tr('categoryBreakdown', ref),
                           style: GoogleFonts.outfit(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         GlassCard(
                           child: Column(
                             children: [
-                              SizedBox(
-                                height: 220,
+                              SizedBox(height: 220.h,
                                 child: PieChart(
                                   PieChartData(
                                     pieTouchData: PieTouchData(
@@ -200,8 +222,8 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                               ? '${percentage.toStringAsFixed(0)}%'
                                               : '',
                                           radius: radius,
-                                          titleStyle: const TextStyle(
-                                            fontSize: 12,
+                                          titleStyle: TextStyle(
+                                            fontSize: 12.sp,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white,
                                           ),
@@ -211,7 +233,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24.h),
                               // Legend
                               Wrap(
                                 spacing: 16,
@@ -233,11 +255,11 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                           color: color,
                                         ),
                                       ),
-                                      const SizedBox(width: 6),
+                                      SizedBox(width: 6.w),
                                       Text(
-                                        '${item.key} (₹${item.value.toStringAsFixed(0)})',
+                                        '${context.tr(item.key.toLowerCase(), ref)} (₹${item.value.toStringAsFixed(0)})',
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 12.sp,
                                           color: isDark
                                               ? Colors.white70
                                               : Colors.black87,
@@ -253,17 +275,17 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
 
                         // AI INSIGHTS BLOCK
                         Text(
                           context.tr('aiRecommendations', ref),
                           style: GoogleFonts.outfit(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         GlassCard(
                           gradientColors: isDark
                               ? [
@@ -281,17 +303,17 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.psychology_rounded,
                                     color: AppColors.primaryCyan,
                                     size: 28,
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Expanded(
                                     child: Text(
                                       aiReport.title,
                                       style: GoogleFonts.outfit(
-                                        fontSize: 16,
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.primaryCyan,
                                       ),
@@ -299,43 +321,43 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16.h),
                               Text(
                                 aiReport.content,
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
                                   height: 1.6,
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24.h),
                               if (aiReport.warnings.isNotEmpty) ...[
                                 Text(
                                   context.tr('warningsLabel', ref),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     color: AppColors.primaryPink,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 8.h),
                                 ...aiReport.warnings.map(
                                   (w) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    padding: EdgeInsets.only(bottom: 8.0),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.warning_amber_rounded,
                                           size: 16,
                                           color: AppColors.primaryPink,
                                         ),
-                                        const SizedBox(width: 8),
+                                        SizedBox(width: 8.w),
                                         Expanded(
                                           child: Text(
                                             w,
                                             style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 13.sp,
                                               color: isDark
                                                   ? Colors.white70
                                                   : Colors.black87,
@@ -346,36 +368,36 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                SizedBox(height: 16.h),
                               ],
                               if (aiReport.actionItems.isNotEmpty) ...[
                                 Text(
                                   context.tr('recActionsLabel', ref),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     color: AppColors.success,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                SizedBox(height: 8.h),
                                 ...aiReport.actionItems.map(
                                   (a) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    padding: EdgeInsets.only(bottom: 8.0),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Icon(
+                                        Icon(
                                           Icons.check_circle_outline_rounded,
                                           size: 16,
                                           color: AppColors.success,
                                         ),
-                                        const SizedBox(width: 8),
+                                        SizedBox(width: 8.w),
                                         Expanded(
                                           child: Text(
                                             a,
                                             style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 13.sp,
                                               color: isDark
                                                   ? Colors.white70
                                                   : Colors.black87,
@@ -390,17 +412,17 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: 32.h),
 
                         // PDF EXPORT
                         Text(
                           'Export Data',
                           style: GoogleFonts.outfit(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         GlassCard(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -412,12 +434,12 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                   Text(
                                     context.tr('exportLog', ref),
                                     style: GoogleFonts.outfit(
-                                      fontSize: 16,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
+                                    padding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 4,
                                     ),
@@ -434,7 +456,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                           ? context.tr('premiumUnlocked', ref)
                                           : context.tr('freePlan', ref),
                                       style: TextStyle(
-                                        fontSize: 10,
+                                        fontSize: 10.sp,
                                         fontWeight: FontWeight.bold,
                                         color: subscriptionTier == 'premium'
                                             ? AppColors.success
@@ -444,18 +466,23 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8.h),
                               Text(
                                 context.tr('exportDesc', ref),
                                 style: TextStyle(
                                   color: Colors.grey[400],
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   height: 1.5,
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24.h),
                               PrimaryButton(
-                                text: context.tr('exportPdfButton', ref),
+                                text: context
+                                    .tr('exportPdfButton', ref)
+                                    .replaceAll(
+                                      '{monthYear}',
+                                      formattedMonthYear,
+                                    ),
                                 icon: Icons.picture_as_pdf_rounded,
                                 onPressed: () async {
                                   if (subscriptionTier == 'free') {
@@ -479,14 +506,14 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                     balance: dashboardData.remainingBalance,
                                     contributions: conState.contributions,
                                     expenses: expState.expenses,
-                                    monthYear: 'May 2026',
+                                    monthYear: formattedMonthYear,
                                   );
                                 },
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 40), // Bottom padding
+                        SizedBox(height: 40.h), // Bottom padding
                       ],
                     ),
                   ),
@@ -504,35 +531,35 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
     required bool isDark,
   }) {
     return GlassCard(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: color, size: 16),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: isDark ? Colors.grey[400] : Colors.grey[600],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             amount,
             style: GoogleFonts.outfit(
-              fontSize: 22,
+              fontSize: 22.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

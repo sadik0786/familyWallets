@@ -7,6 +7,7 @@ import 'services/local_db_service.dart';
 import 'routes/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/profile/controllers/profile_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +16,7 @@ void main() async {
   await dotenv.load(fileName: '.env');
 
   // 2. Force premium portrait visual orientation
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // 3. Initialize SharedPreferences local database
   final localDb = LocalDbService();
@@ -29,11 +28,7 @@ void main() async {
 
   // Removed mock family workspace setup so real users can recover their sessions.
 
-  runApp(
-    const ProviderScope(
-      child: FamilyWalletApp(),
-    ),
-  );
+  runApp(ProviderScope(child: FamilyWalletApp()));
 }
 
 class FamilyWalletApp extends ConsumerWidget {
@@ -45,13 +40,20 @@ class FamilyWalletApp extends ConsumerWidget {
     final profileState = ref.watch(profileControllerProvider);
     final isDark = profileState.isDarkMode;
 
-    return MaterialApp.router(
-      title: 'Family Wallet',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-      routerConfig: router,
+    return ScreenUtilInit(
+      designSize: Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          title: 'Family Wallet',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          routerConfig: router,
+        );
+      },
     );
   }
 }

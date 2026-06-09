@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
@@ -9,7 +10,7 @@ class GlassCard extends StatelessWidget {
   final double borderRadius;
   final double blur;
   final BorderSide? borderSide;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   final List<Color>? gradientColors;
 
   const GlassCard({
@@ -20,12 +21,13 @@ class GlassCard extends StatelessWidget {
     this.borderRadius = 24.0,
     this.blur = 15.0,
     this.borderSide,
-    this.padding = const EdgeInsets.all(20.0),
+    this.padding,
     this.gradientColors,
   });
 
   @override
   Widget build(final BuildContext context) {
+    final effectivePadding = padding ?? EdgeInsets.all(20.0.w);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final background = isDark
@@ -48,7 +50,7 @@ class GlassCard extends StatelessWidget {
         child: Container(
           width: width,
           height: height,
-          padding: padding,
+          padding: effectivePadding,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.fromBorderSide(border),

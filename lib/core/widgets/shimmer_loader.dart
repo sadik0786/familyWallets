@@ -26,7 +26,7 @@ class _ShimmerLoaderState extends State<ShimmerLoader>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
     )..repeat();
     _animation = Tween<double>(begin: -2.0, end: 2.0).animate(_controller);
   }
@@ -57,7 +57,7 @@ class _ShimmerLoaderState extends State<ShimmerLoader>
                 highlightColor,
                 baseColor,
               ],
-              stops: const [0.35, 0.5, 0.65],
+              stops:  [0.35, 0.5, 0.65],
               begin: Alignment(_animation.value - 1, -0.3),
               end: Alignment(_animation.value + 1, 0.3),
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,35 +19,35 @@ class AdminDashboardView extends ConsumerWidget {
     );
 
     if (adminState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator());
     }
 
     if (adminState.errorMessage != null) {
       return Center(
         child: Text(
           adminState.errorMessage!,
-          style: const TextStyle(color: Colors.red),
+          style: TextStyle(color: Colors.red),
         ),
       );
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(20.0.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Platform Performance',
             style: GoogleFonts.outfit(
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             'Multi-tenant statistics across all global families',
-            style: TextStyle(color: Colors.grey[500], fontSize: 13),
+            style: TextStyle(color: Colors.grey[500], fontSize: 13.sp),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // PERFORMANCE STATS GRID
           Row(
@@ -59,7 +60,7 @@ class AdminDashboardView extends ConsumerWidget {
                   color: AppColors.primaryCyan,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: _buildAdminMetricCard(
                   title: 'Active Families',
@@ -70,7 +71,7 @@ class AdminDashboardView extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
             children: [
               Expanded(
@@ -83,7 +84,7 @@ class AdminDashboardView extends ConsumerWidget {
                   color: AppColors.success,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: _buildAdminMetricCard(
                   title: 'Reported Issues',
@@ -106,22 +107,22 @@ class AdminDashboardView extends ConsumerWidget {
     required Color color,
   }) {
     return GlassCard(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-          const SizedBox(height: 8),
+          Text(title, style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+          SizedBox(height: 8.h),
           Text(
             value,
             style: GoogleFonts.outfit(
-              fontSize: 22,
+              fontSize: 22.sp,
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(sub, style: TextStyle(fontSize: 10, color: Colors.grey[500])),
+          SizedBox(height: 4.h),
+          Text(sub, style: TextStyle(fontSize: 10.sp, color: Colors.grey[500])),
         ],
       ),
     );

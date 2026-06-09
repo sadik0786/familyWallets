@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:family_wallet/features/dashboard/controllers/dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +55,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
@@ -77,7 +78,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     final expenses = ref.read(expenseControllerProvider).expenses;
     final locale = ref.read(profileControllerProvider).language;
 
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(Duration(milliseconds: 1500));
 
     // Dynamic response logic based on user queries and locale
     String reply = '';
@@ -161,7 +162,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -173,7 +174,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final msg = _messages[index];
@@ -184,21 +185,21 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 
             if (_isTyping)
               Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.psychology_rounded,
                       color: AppColors.primaryCyan,
                       size: 16,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     Text(
                       context.tr('coachThinking', ref),
-                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                      style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
                     ),
                   ],
                 ),
@@ -206,14 +207,14 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 
             // INPUT CONTROLS BAR
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              padding: EdgeInsets.fromLTRB(16, 12, 16, 24),
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkSurface : Colors.white,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
-                    offset: const Offset(0, -2),
+                    offset: Offset(0, -2),
                   ),
                 ],
               ),
@@ -230,7 +231,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                             color: AppColors.primaryCyan,
                             width: 1.5,
                           ),
@@ -240,12 +241,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   CircleAvatar(
                     radius: 24,
                     backgroundColor: AppColors.primaryPurple,
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.send,
                         color: Colors.white,
                         size: 18,
@@ -278,16 +279,16 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
       crossAxisAlignment: align,
       children: [
         Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          margin: EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.75,
           ),
           decoration: BoxDecoration(
             color: bubbleColor,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(20),
-              topRight: const Radius.circular(20),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
               bottomLeft: Radius.circular(msg.isUser ? 20 : 4),
               bottomRight: Radius.circular(msg.isUser ? 4 : 20),
             ),
@@ -295,14 +296,14 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 4,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
           child: Text(
             msg.text,
             style: GoogleFonts.outfit(
-              fontSize: 13,
+              fontSize: 13.sp,
               height: 1.5,
               color: textColor,
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -58,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 8.0,
                   ),
@@ -68,7 +69,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       'Skip',
                       style: GoogleFonts.outfit(
                         color: AppColors.primaryCyan,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -89,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   itemBuilder: (context, index) {
                     final slide = _slides[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      padding: EdgeInsets.symmetric(horizontal: 32.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -105,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     alpha: 0.3,
                                   ),
                                   blurRadius: 30,
-                                  offset: const Offset(0, 10),
+                                  offset: Offset(0, 10),
                                 ),
                               ],
                             ),
@@ -115,24 +116,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 48),
+                          SizedBox(height: 48.h),
                           Text(
                             slide['title']!,
                             textAlign: TextAlign.center,
                             style: GoogleFonts.outfit(
-                              fontSize: 26,
+                              fontSize: 26.sp,
                               fontWeight: FontWeight.bold,
                               color: isDark
                                   ? Colors.white
-                                  : const Color(0xFF0F172A),
+                                  : Color(0xFF0F172A),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Text(
                             slide['desc']!,
                             textAlign: TextAlign.center,
                             style: GoogleFonts.outfit(
-                              fontSize: 15,
+                              fontSize: 15.sp,
                               color: isDark
                                   ? Colors.grey[400]
                                   : Colors.grey[600],
@@ -148,7 +149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
               // Slider indicators and Bottom actions
               Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: EdgeInsets.all(32.0.w),
                 child: Column(
                   children: [
                     Row(
@@ -156,8 +157,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: List.generate(
                         _slides.length,
                         (index) => AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          duration: Duration(milliseconds: 300),
+                          margin: EdgeInsets.symmetric(horizontal: 4.0),
                           width: _currentPage == index ? 24.0 : 8.0,
                           height: 8.0,
                           decoration: BoxDecoration(
@@ -169,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     PrimaryButton(
                       text: _currentPage == _slides.length - 1
                           ? 'Get Started'
@@ -179,7 +180,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           context.go('/login');
                         } else {
                           _pageController.nextPage(
-                            duration: const Duration(milliseconds: 400),
+                            duration: Duration(milliseconds: 400),
                             curve: Curves.easeInOut,
                           );
                         }

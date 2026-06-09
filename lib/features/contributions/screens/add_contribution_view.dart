@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -96,18 +97,18 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(20.0.w),
           child: Column(
             children: [
               GlassCard(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(24.0.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -115,11 +116,11 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
                       // Amount
                       TextFormField(
                         controller: _amountController,
-                        keyboardType: const TextInputType.numberWithOptions(
+                        keyboardType: TextInputType.numberWithOptions(
                           decimal: true,
                         ),
                         style: GoogleFonts.outfit(
-                          fontSize: 24,
+                          fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -134,8 +135,8 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
                             ? context.tr('invalidAmount', ref)
                             : null,
                       ),
-                      const Divider(),
-                      const SizedBox(height: 16),
+                      Divider(),
+                      SizedBox(height: 16.h),
 
                       // Notes Note
                       TextFormField(
@@ -148,7 +149,7 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
                             ? context.tr('contributionNoteRequired', ref)
                             : null,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
 
                       // Date Picker
                       TextFormField(
@@ -160,7 +161,7 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
                           Icons.calendar_today_outlined,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
 
                       // Save
                       PrimaryButton(
@@ -183,7 +184,7 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
     return InputDecoration(
       labelText: label,
       prefixIcon: Icon(icon, color: Colors.grey),
-      labelStyle: const TextStyle(color: Colors.grey),
+      labelStyle: TextStyle(color: Colors.grey),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
@@ -192,7 +193,7 @@ class _AddContributionViewState extends ConsumerState<AddContributionView> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.primaryCyan, width: 1.5),
+        borderSide: BorderSide(color: AppColors.primaryCyan, width: 1.5),
       ),
       filled: true,
       fillColor: isDark ? Colors.black26 : Colors.white60,

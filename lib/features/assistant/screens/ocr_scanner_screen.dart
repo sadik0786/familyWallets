@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,7 +33,7 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: Duration(seconds: 2),
     );
 
     _scanPositionAnimation = Tween<double>(begin: 0.05, end: 0.95).animate(
@@ -106,6 +107,7 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
           addedBy: addedBy,
           receiptUrl:
               'https://via.placeholder.com/800x600.png?text=Demo+Receipt', // Simulated receipt URL
+          paymentMethod: 'cash',
         );
 
     if (success && mounted) {
@@ -129,14 +131,14 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(20.0.w),
           child: Column(
             children: [
               // SCANNER HOLOGRAPHIC CONTAINER
@@ -161,13 +163,13 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
                                     size: 64,
                                     color: Colors.grey[700],
                                   ),
-                                  const SizedBox(height: 16),
+                                  SizedBox(height: 16.h),
                                   Text(
                                     context.tr('cameraInstruction', ref),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.grey[600],
-                                      fontSize: 13,
+                                      fontSize: 13.sp,
                                     ),
                                   ),
                                 ],
@@ -219,7 +221,7 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               // ACTION PANELS OR RESULT DETAILS
               if (_scanResult == null) ...[
@@ -232,14 +234,14 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
                         onPressed: () => _pickImage(ImageSource.camera),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () => _pickImage(ImageSource.gallery),
-                        icon: const Icon(Icons.photo_library_outlined),
+                        icon: Icon(Icons.photo_library_outlined),
                         label: Text(context.tr('galleryPick', ref)),
                         style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 56),
+                          minimumSize: Size(double.infinity, 56),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -257,11 +259,11 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
                         context.tr('extractedDetailsLabel', ref),
                         style: GoogleFonts.outfit(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: AppColors.primaryCyan,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _buildResultRow(
                         context.tr('merchant', ref),
                         _scanResult!.description,
@@ -274,13 +276,13 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
                         context.tr('logDate', ref),
                         '${_scanResult!.date.year}-${_scanResult!.date.month}-${_scanResult!.date.day}',
                       ),
-                      const Divider(),
+                      Divider(),
                       _buildResultRow(
                         context.tr('totalExtractedLabel', ref),
                         '₹${_scanResult!.amount.toStringAsFixed(2)}',
                         isHighlighted: true,
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       PrimaryButton(
                         text: context.tr('confirmLogExpense', ref),
                         onPressed: _confirmAndSave,
@@ -302,11 +304,14 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
     bool isHighlighted = false,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+          ),
           Text(
             value,
             style: GoogleFonts.outfit(

@@ -10,6 +10,8 @@ class DashboardData {
   final List<ContributionModel> recentContributions;
   final List<ExpenseModel> recentExpenses;
   final Map<String, double> categoryBreakdown;
+  final double cashSpent;
+  final double onlineSpent;
   final bool isLoading;
 
   DashboardData({
@@ -19,35 +21,61 @@ class DashboardData {
     this.recentContributions = const [],
     this.recentExpenses = const [],
     this.categoryBreakdown = const {},
+    this.cashSpent = 0.0,
+    this.onlineSpent = 0.0,
     this.isLoading = false,
   });
 }
+
+final selectedMonthProvider = StateProvider<DateTime>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month);
+});
 
 final dashboardControllerProvider = Provider<DashboardData>((ref) {
   final contributionState = ref.watch(contributionControllerProvider);
   final expenseState = ref.watch(expenseControllerProvider);
 
-  final contributions = contributionState.contributions;
-  final expenses = expenseState.expenses;
+  final selectedMonth = ref.watch(selectedMonthProvider);
 
-  // 1. Calculate Total Contributions
-  final double totalIn = contributions.fold(0.0, (sum, item) => sum + item.amount);
+  // Filter contributions by selected month/year
+  final filteredContributions = contributionState.contributions.where((c) {
+    return c.date.year == selectedMonth.year && c.date.month == selectedMonth.month;
+  }).toList();
 
-  // 2. Calculate Total Expenses
-  final double totalOut = expenses.fold(0.0, (sum, item) => sum + item.amount);
+  // Filter expenses by selected month/year
+  final filteredExpenses = expenseState.expenses.where((e) {
+    return e.date.year == selectedMonth.year && e.date.month == selectedMonth.month;
+  }).toList();
 
-  // 3. Dynamic Balance calculation
-  final double balance = totalIn - totalOut;
+  // 1. Calculate Total Contributions for the month
+  final double totalIn = filteredContributions.fold(0.0, (sum, item) => sum + item.amount);
 
-  // 4. Calculate Category breakdowns for fl_chart
+  // 2. Calculate Total Expenses and breakdowns for the month
+  double totalOut = 0.0;
+  double cashSpent = 0.0;
+  double onlineSpent = 0.0;
   final categoryTotals = <String, double>{};
-  for (final exp in expenses) {
+
+  for (final exp in filteredExpenses) {
+    totalOut += exp.amount;
     categoryTotals[exp.category] = (categoryTotals[exp.category] ?? 0.0) + exp.amount;
+    if (exp.paymentMethod == 'cash') {
+      cashSpent += exp.amount;
+    } else if (exp.paymentMethod == 'online') {
+      onlineSpent += exp.amount;
+    } else {
+      // Default fallback if no paymentMethod is set (legacy data)
+      cashSpent += exp.amount;
+    }
   }
 
+  // 3. Dynamic Balance calculation for the month
+  final double balance = totalIn - totalOut;
+
   // 5. Slice recent activities
-  final recentCons = contributions.take(4).toList();
-  final recentExps = expenses.take(4).toList();
+  final recentCons = filteredContributions.take(4).toList();
+  final recentExps = filteredExpenses.take(4).toList();
 
   final isLoading = contributionState.isLoading || expenseState.isLoading;
 
@@ -58,6 +86,8 @@ final dashboardControllerProvider = Provider<DashboardData>((ref) {
     recentContributions: recentCons,
     recentExpenses: recentExps,
     categoryBreakdown: categoryTotals,
+    cashSpent: cashSpent,
+    onlineSpent: onlineSpent,
     isLoading: isLoading,
   );
 });

@@ -32,7 +32,7 @@ class _FadeInSlideState extends State<FadeInSlide>
     );
 
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
+      begin: Offset(0, 0.1),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 

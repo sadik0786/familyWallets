@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +25,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
     super.initState();
     _glowController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
     )..repeat(reverse: true);
 
     _glowAnimation = Tween<double>(begin: 0.1, end: 0.6).animate(
@@ -43,14 +44,14 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
     final adminState = ref.watch(adminControllerProvider);
 
     if (adminState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator());
     }
 
     if (adminState.errorMessage != null) {
       return Center(
         child: Text(
           adminState.errorMessage!,
-          style: const TextStyle(color: Colors.red),
+          style: TextStyle(color: Colors.red),
         ),
       );
     }
@@ -78,7 +79,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+          padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.05),
@@ -91,12 +92,12 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
               decoration: InputDecoration(
                 hintText: 'Search users by name or contact...',
                 hintStyle: GoogleFonts.outfit(color: Colors.grey[500]),
-                prefixIcon: const Icon(
+                prefixIcon: Icon(
                   Icons.search_rounded,
                   color: AppColors.primaryCyan,
                 ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   vertical: 16,
                   horizontal: 20,
                 ),
@@ -115,19 +116,19 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                         size: 64,
                         color: Colors.grey.withValues(alpha: 0.5),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         'No users found.',
                         style: GoogleFonts.outfit(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ],
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 8,
                   ),
@@ -142,7 +143,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                         : 'Unknown Date';
 
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                      padding: EdgeInsets.only(bottom: 16.0),
                       child: _buildUserFeedRow(
                         name:
                             user['display_name']?.toString() ?? 'Unnamed User',
@@ -197,7 +198,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
       return Stack(
         children: [
           GlassCard(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.w),
             borderRadius: 16.0,
             borderSide: customBorder,
             child: Row(
@@ -249,7 +250,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                     size: 24,
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 // Info
                 Expanded(
                   child: Column(
@@ -259,24 +260,24 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                         name,
                         style: GoogleFonts.outfit(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           color: Colors.white,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         contact,
                         style: GoogleFonts.outfit(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           color: Colors.grey[400],
                         ),
                       ),
                       if (familyName != null && familyName.isNotEmpty) ...[
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 8,
                             vertical: 4,
                           ),
@@ -294,17 +295,17 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.family_restroom_rounded,
                                 size: 12,
                                 color: AppColors.primaryBlue,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6.w),
                               Flexible(
                                 child: Text(
                                   familyName,
                                   style: GoogleFonts.outfit(
-                                    fontSize: 11,
+                                    fontSize: 11.sp,
                                     color: AppColors.primaryBlue,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -323,11 +324,11 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const SizedBox(height: 24), // Spacer for badge if any
+                    SizedBox(height: 24.h), // Spacer for badge if any
                     Text(
                       joinedAt,
                       style: GoogleFonts.outfit(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         color: Colors.grey[500],
                       ),
                     ),
@@ -341,10 +342,10 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
             top: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [roleColor1, roleColor2]),
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topRight: Radius.circular(16),
                   bottomLeft: Radius.circular(12),
                 ),
@@ -352,7 +353,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                   BoxShadow(
                     color: roleColor1.withValues(alpha: 0.4),
                     blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -360,11 +361,11 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(roleIcon, size: 10, color: Colors.white),
-                  const SizedBox(width: 4),
+                  SizedBox(width: 4.w),
                   Text(
                     roleText,
                     style: GoogleFonts.outfit(
-                      fontSize: 9,
+                      fontSize: 9.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: 0.5,

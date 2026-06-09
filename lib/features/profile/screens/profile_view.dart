@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +31,7 @@ class ProfileView extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -38,7 +39,7 @@ class ProfileView extends ConsumerWidget {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -46,15 +47,15 @@ class ProfileView extends ConsumerWidget {
                 Text(
                   context.tr('profileWorkspace', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   context.tr('manageWorkspace', ref),
-                  style: TextStyle(color: Colors.grey[500], fontSize: 13),
+                  style: TextStyle(color: Colors.grey[500], fontSize: 13.sp),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // USER PROFILE HEADER CARD
                 GlassCard(
@@ -62,36 +63,42 @@ class ProfileView extends ConsumerWidget {
                     children: [
                       CircleAvatar(
                         radius: 36,
-                        backgroundColor: AppColors.primaryBlue.withValues(alpha: 0.2),
+                        backgroundColor: AppColors.primaryBlue.withValues(
+                          alpha: 0.2,
+                        ),
                         backgroundImage: user?.avatarUrl != null
                             ? NetworkImage(user!.avatarUrl!)
                             : null,
                         child: user?.avatarUrl == null
-                            ? const Icon(Icons.person_rounded, size: 40, color: AppColors.primaryBlue)
+                            ? Icon(
+                                Icons.person_rounded,
+                                size: 40,
+                                color: AppColors.primaryBlue,
+                              )
                             : null,
                       ),
-                      const SizedBox(width: 20),
+                      SizedBox(width: 20.w),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             user?.displayName ?? 'Demo',
                             style: GoogleFonts.outfit(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             user?.email ?? 'demo@familywallet.com',
                             style: TextStyle(
                               color: Colors.grey[400],
-                              fontSize: 12,
+                              fontSize: 12.sp,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 2,
                             ),
@@ -102,11 +109,15 @@ class ProfileView extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              profileState.members.any((m) => m.userId == authState.user?.id && m.role == 'admin')
+                              profileState.members.any(
+                                    (m) =>
+                                        m.userId == authState.user?.id &&
+                                        m.role == 'admin',
+                                  )
                                   ? 'WORKSPACE OWNER'
                                   : 'WORKSPACE MEMBER',
-                              style: const TextStyle(
-                                fontSize: 8,
+                              style: TextStyle(
+                                fontSize: 8.sp,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryCyan,
                               ),
@@ -117,17 +128,17 @@ class ProfileView extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // WORKSPACE CREATION OR JOINING (SaaS MULTI-TENANCY)
                 Text(
                   context.tr('multiFamilyWorkspaces', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 if (family == null)
                   GlassCard(
                     child: Column(
@@ -135,25 +146,22 @@ class ProfileView extends ConsumerWidget {
                       children: [
                         Text(
                           context.tr('notInFamilyPrompt', ref),
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 13.sp, color: Colors.grey),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         PrimaryButton(
                           text: context.tr('createFamilyWorkspace', ref),
                           onPressed: () {
                             _showCreateFamilyDialog(context, ref);
                           },
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12.h),
                         OutlinedButton(
                           onPressed: () {
                             _showJoinFamilyDialog(context, ref);
                           },
                           style: OutlinedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
+                            minimumSize: Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -175,32 +183,32 @@ class ProfileView extends ConsumerWidget {
                             Text(
                               context.tr('inviteMembers', ref),
                               style: GoogleFonts.outfit(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const Icon(
+                            Icon(
                               Icons.share_rounded,
                               color: AppColors.primaryCyan,
                               size: 20,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Text(
                           context.tr('shareCodeDesc', ref),
                           style: TextStyle(
                             color: Colors.grey[400],
-                            fontSize: 11,
+                            fontSize: 11.sp,
                             height: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         Row(
                           children: [
                             Expanded(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
+                                padding: EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 14,
                                 ),
@@ -215,7 +223,7 @@ class ProfileView extends ConsumerWidget {
                                   family.inviteCode,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.outfit(
-                                    fontSize: 18,
+                                    fontSize: 18.sp,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primaryCyan,
                                     letterSpacing: 1,
@@ -223,7 +231,7 @@ class ProfileView extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12.w),
                             IconButton(
                               onPressed: () {
                                 Clipboard.setData(
@@ -236,7 +244,7 @@ class ProfileView extends ConsumerWidget {
                                   ),
                                 );
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.copy_rounded,
                                 color: AppColors.primaryCyan,
                               ),
@@ -246,90 +254,79 @@ class ProfileView extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // WORKSPACE MEMBERS LIST
                   Text(
                     '${context.tr('activeFamilyMembers', ref)} (${profileState.members.length})',
                     style: GoogleFonts.outfit(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   ...profileState.members.map(
-                    (member) => Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: 0.04),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundColor: AppColors.primaryBlue
-                                    .withValues(alpha: 0.2),
-                                child: Text(
-                                  member.userDetails?.displayName
-                                          .substring(0, 1)
-                                          .toUpperCase() ??
-                                      'F',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryBlue,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    member.userDetails?.displayName ??
-                                        'Brother Ahmad',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    member.userDetails?.email ??
-                                        'brother@gmail.com',
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                    (member) => Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 12),
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withValues(alpha: 0.04),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          Row(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _getRoleColor(
-                                    member.role,
-                                  ).withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  member.role.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.bold,
-                                    color: _getRoleColor(member.role),
-                                  ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 18,
+                                      backgroundColor: AppColors.primaryBlue
+                                          .withValues(alpha: 0.2),
+                                      child: Text(
+                                        member.userDetails?.displayName
+                                                .substring(0, 1)
+                                                .toUpperCase() ??
+                                            'F',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primaryBlue,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            member.userDetails?.displayName ??
+                                                'Brother Ahmad',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13.sp,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 2.h),
+                                          Text(
+                                            member.userDetails?.email ??
+                                                'brother@gmail.com',
+                                            style: TextStyle(
+                                              fontSize: 10.sp,
+                                              color: Colors.grey,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               if (profileState.members.any(
@@ -338,15 +335,15 @@ class ProfileView extends ConsumerWidget {
                                         m.role == 'admin',
                                   ) &&
                                   member.userId != authState.user?.id) ...[
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8.w),
                                 IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.delete_outline_rounded,
                                     color: AppColors.error,
                                     size: 20,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
+                                  constraints: BoxConstraints(),
                                   onPressed: () {
                                     ref
                                         .read(
@@ -358,22 +355,49 @@ class ProfileView extends ConsumerWidget {
                               ],
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getRoleColor(
+                                member.role,
+                              ).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomLeft: Radius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              member.role.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 9.sp,
+                                fontWeight: FontWeight.bold,
+                                color: _getRoleColor(member.role),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // THEME AND SYSTEM CONTROLS
                 Text(
                   context.tr('profileSettings', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 GlassCard(
                   child: Column(
                     children: [
@@ -382,8 +406,8 @@ class ProfileView extends ConsumerWidget {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.dark_mode_outlined, size: 20),
-                              const SizedBox(width: 12),
+                              Icon(Icons.dark_mode_outlined, size: 20),
+                              SizedBox(width: 12.w),
                               Text(context.tr('themeMode', ref)),
                             ],
                           ),
@@ -398,31 +422,29 @@ class ProfileView extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      const Divider(),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
+                      Divider(),
+                      SizedBox(height: 12.h),
                       // APP LANGUAGE SELECTION DROPDOWN
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.translate_rounded,
                                 size: 20,
                                 color: AppColors.primaryCyan,
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12.w),
                               Text(
                                 context.tr('languageSelection', ref),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
                               color: isDark
                                   ? Colors.grey[855]
@@ -434,7 +456,7 @@ class ProfileView extends ConsumerWidget {
                             ),
                             child: DropdownButton<String>(
                               value: profileState.language,
-                              underline: const SizedBox(),
+                              underline: SizedBox(),
                               dropdownColor: isDark
                                   ? AppColors.darkCard
                                   : Colors.white,
@@ -443,9 +465,9 @@ class ProfileView extends ConsumerWidget {
                                   context,
                                 ).textTheme.bodyMedium?.color,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                                fontSize: 13.sp,
                               ),
-                              items: const [
+                              items: [
                                 DropdownMenuItem(
                                   value: 'en',
                                   child: Text('English 🇺🇸'),
@@ -469,55 +491,49 @@ class ProfileView extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // HOW TO USE BUTTON
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const HowToUseView()),
+                      MaterialPageRoute(builder: (_) => HowToUseView()),
                     );
                   },
                   child: GlassCard(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.help_outline_rounded,
                               size: 22,
                               color: AppColors.primaryPurple,
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12.w),
                             Text(
                               'How to use this app',
                               style: GoogleFonts.outfit(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
-                        const Icon(
-                          Icons.chevron_right_rounded,
-                          color: Colors.grey,
-                        ),
+                        Icon(Icons.chevron_right_rounded, color: Colors.grey),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
 
                 // LOGOUT BUTTON
                 PrimaryButton(
                   text: context.tr('logout', ref),
-                  gradientColors: const [Color(0xFFE11D48), Color(0xFFBE123C)],
+                  gradientColors: [Color(0xFFE11D48), Color(0xFFBE123C)],
                   icon: Icons.logout_rounded,
                   onPressed: () async {
                     await ref.read(authControllerProvider.notifier).logout();
@@ -555,7 +571,7 @@ class ProfileView extends ConsumerWidget {
           title: Text(context.tr('createFamilyWorkspace', ref)),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'e.g. Demo Family, Apex Ledger',
             ),
           ),
@@ -596,7 +612,7 @@ class ProfileView extends ConsumerWidget {
           title: Text(context.tr('joinWorkspaceInvite', ref)),
           content: TextField(
             controller: controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter 7-character invite code',
             ),
           ),
@@ -627,7 +643,7 @@ class ProfileView extends ConsumerWidget {
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
                             'Failed to join workspace. Check code.',
                           ),

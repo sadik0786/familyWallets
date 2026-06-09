@@ -10,6 +10,7 @@ import '../features/assistant/screens/ai_chat_screen.dart';
 import '../features/assistant/screens/ocr_scanner_screen.dart';
 import '../features/admin/screens/admin_shell_screen.dart';
 import '../features/auth/controllers/auth_controller.dart';
+import '../features/reports/screens/monthly_savings_view.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authControllerProvider);
@@ -61,36 +62,40 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/splash',
-        builder: (context, state) => const SplashScreen(),
+        builder: (context, state) => SplashScreen(),
       ),
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => OnboardingScreen(),
       ),
-      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
       GoRoute(
         path: '/signup',
-        builder: (context, state) => const SignupScreen(),
+        builder: (context, state) => SignupScreen(),
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const NavigationShellScreen(),
+        builder: (context, state) => NavigationShellScreen(),
       ),
       GoRoute(
         path: '/ai-chat',
-        builder: (context, state) => const AiChatScreen(),
+        builder: (context, state) => AiChatScreen(),
       ),
       GoRoute(
         path: '/ocr-scanner',
-        builder: (context, state) => const OcrScannerScreen(),
+        builder: (context, state) => OcrScannerScreen(),
       ),
       GoRoute(
         path: '/admin',
-        builder: (context, state) => const AdminShellScreen(),
+        builder: (context, state) => AdminShellScreen(),
       ),
       GoRoute(
         path: '/premium',
-        builder: (context, state) => const PremiumSubscriptionScreen(),
+        builder: (context, state) => PremiumSubscriptionScreen(),
+      ),
+      GoRoute(
+        path: '/monthly-savings',
+        builder: (context, state) => MonthlySavingsView(),
       ),
     ],
   );

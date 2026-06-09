@@ -89,6 +89,7 @@ class ExpenseModel {
   final String addedByName;
   final String? receiptUrl;
   final String? recurringRuleId;
+  final String? paymentMethod; // 'cash' or 'online'
   final DateTime createdAt;
 
   ExpenseModel({
@@ -102,6 +103,7 @@ class ExpenseModel {
     required this.addedByName,
     this.receiptUrl,
     this.recurringRuleId,
+    this.paymentMethod,
     required this.createdAt,
   });
 
@@ -119,6 +121,7 @@ class ExpenseModel {
       addedByName: json['added_by_name'] as String? ?? 'Family Member',
       receiptUrl: json['receipt_url'] as String?,
       recurringRuleId: json['recurring_rule_id'] as String?,
+      paymentMethod: json['payment_method'] as String?,
       createdAt: json['created_at'] != null 
           ? DateTime.parse(json['created_at'] as String) 
           : DateTime.now(),
@@ -137,6 +140,7 @@ class ExpenseModel {
       'added_by_name': addedByName,
       'receipt_url': receiptUrl,
       'recurring_rule_id': recurringRuleId,
+      'payment_method': paymentMethod,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -152,6 +156,7 @@ class ExpenseModel {
     String? addedByName,
     String? receiptUrl,
     String? recurringRuleId,
+    String? paymentMethod,
     DateTime? createdAt,
   }) {
     return ExpenseModel(
@@ -165,6 +170,7 @@ class ExpenseModel {
       addedByName: addedByName ?? this.addedByName,
       receiptUrl: receiptUrl ?? this.receiptUrl,
       recurringRuleId: recurringRuleId ?? this.recurringRuleId,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
       createdAt: createdAt ?? this.createdAt,
     );
   }

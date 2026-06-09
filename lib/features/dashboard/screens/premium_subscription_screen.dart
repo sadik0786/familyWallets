@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,74 +26,74 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
       appBar: AppBar(
         title: Text(
-          'Premium Plan',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+          context.tr('premiumPlan', ref),
+          style: GoogleFonts.outfit(fontSize: 20.sp, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.star_rounded,
               color: AppColors.primaryPink,
               size: 80,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
-              'Upgrade to Premium',
+              context.tr('upgradePremium', ref),
               style: GoogleFonts.outfit(
-                fontSize: 28,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
-              'Unlock powerful features for your entire family workspace. One subscription covers everyone.',
+              context.tr('premiumSubtitle', ref),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: Colors.grey[500],
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40.h),
             
             // Benefits List
             _buildBenefitItem(
               icon: Icons.auto_awesome_rounded,
-              title: 'AI Financial Assistant',
-              desc: 'Get personalized insights and chat with AI about your spending habits.',
+              title: context.tr('aiAssistantTitle', ref),
+              desc: context.tr('aiAssistantDesc', ref),
               color: AppColors.primaryPurple,
             ),
             _buildBenefitItem(
               icon: Icons.document_scanner_rounded,
-              title: 'Unlimited Receipt Scanning',
-              desc: 'Scan receipts with AI and automatically extract amounts and categories.',
+              title: context.tr('unlimitedScanTitle', ref),
+              desc: context.tr('unlimitedScanDesc', ref),
               color: AppColors.primaryCyan,
             ),
             _buildBenefitItem(
               icon: Icons.pie_chart_rounded,
-              title: 'Advanced Analytics & Reports',
-              desc: 'Export detailed PDF/Excel reports and view advanced breakdown charts.',
+              title: context.tr('advancedAnalyticsTitle', ref),
+              desc: context.tr('advancedAnalyticsDesc', ref),
               color: AppColors.primaryBlue,
             ),
             _buildBenefitItem(
               icon: Icons.family_restroom_rounded,
-              title: 'Up to 10 Family Members',
-              desc: 'Add extended family members with custom roles and permissions.',
+              title: context.tr('upTo10FamilyTitle', ref),
+              desc: context.tr('upTo10FamilyDesc', ref),
               color: AppColors.success,
             ),
             
-            const SizedBox(height: 40),
+            SizedBox(height: 40.h),
             
             // Pricing Box
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(24.w),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -108,15 +109,15 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
               child: Column(
                 children: [
-                  const Text(
-                    'Yearly Plan',
+                  Text(
+                    context.tr('yearlyPlan', ref),
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primaryPink,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -124,11 +125,11 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
                       Text(
                         '₹500',
                         style: GoogleFonts.outfit(
-                          fontSize: 40,
+                          fontSize: 40.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.only(bottom: 8.0, left: 4.0),
                         child: Text('/ year', style: TextStyle(color: Colors.grey)),
                       ),
@@ -138,16 +139,16 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
             ),
             
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             
             PrimaryButton(
-              text: 'Subscribe Now',
+              text: context.tr('subscribeNow', ref),
               isLoading: _isProcessing,
               onPressed: () async {
                 setState(() => _isProcessing = true);
                 
                 // Simulate payment gateway delay
-                await Future.delayed(const Duration(seconds: 2));
+                await Future.delayed(Duration(seconds: 2));
                 
                 if (!context.mounted) return;
                 
@@ -167,10 +168,10 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
                 context.pop(); // Go back to dashboard
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextButton(
               onPressed: () => context.pop(),
-              child: const Text('Maybe Later', style: TextStyle(color: Colors.grey)),
+              child: Text(context.tr('maybeLater', ref), style: TextStyle(color: Colors.grey)),
             ),
           ],
         ),
@@ -185,36 +186,36 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
     required Color color,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24.0),
+      padding: EdgeInsets.only(bottom: 24.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 24),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   desc,
                   style: TextStyle(
                     color: Colors.grey[500],
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     height: 1.4,
                   ),
                 ),

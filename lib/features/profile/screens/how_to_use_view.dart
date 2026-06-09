@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +28,7 @@ class HowToUseView extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -35,17 +36,17 @@ class HowToUseView extends ConsumerWidget {
         ),
         child: SafeArea(
           child: ListView(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0.w),
             children: [
               Text(
                 'Welcome to Family Wallet! Here is a simple guide to help you get started with managing your family finances.',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   height: 1.5,
                   color: isDark ? Colors.white70 : Colors.black87,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               _buildStepCard(
                 context: context,
                 icon: Icons.group_add_rounded,
@@ -86,12 +87,12 @@ class HowToUseView extends ConsumerWidget {
                 description:
                     'If you are the Admin (the one who created the workspace), you can go to the Profile tab to manage members, remove them, or upgrade to Premium for PDF exports.',
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               Center(
                 child: Text(
                   'Need more help? Contact Support.',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: Colors.grey[500],
                     fontWeight: FontWeight.bold,
                   ),
@@ -105,18 +106,18 @@ class HowToUseView extends ConsumerWidget {
                       await launchUrl(phoneUri);
                     }
                   },
-                  icon: const Icon(Icons.call_rounded, size: 16, color: AppColors.primaryCyan),
+                  icon: Icon(Icons.call_rounded, size: 16, color: AppColors.primaryCyan),
                   label: Text(
                     '+91 7303224509',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       color: AppColors.primaryCyan,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
             ],
           ),
         ),
@@ -134,39 +135,39 @@ class HowToUseView extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: EdgeInsets.only(bottom: 16.0),
       child: GlassCard(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.w),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, color: color, size: 24),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Text(
                     title,
                     style: GoogleFonts.outfit(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               description,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 13.sp,
                 height: 1.5,
                 color: isDark ? Colors.grey[400] : Colors.grey[700],
               ),

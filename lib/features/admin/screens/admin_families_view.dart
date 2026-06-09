@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,14 +21,14 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
     final adminState = ref.watch(adminControllerProvider);
 
     if (adminState.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator());
     }
 
     if (adminState.errorMessage != null) {
       return Center(
         child: Text(
           adminState.errorMessage!,
-          style: const TextStyle(color: Colors.red),
+          style: TextStyle(color: Colors.red),
         ),
       );
     }
@@ -42,7 +43,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+          padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.05),
@@ -55,12 +56,12 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
               decoration: InputDecoration(
                 hintText: 'Search workspaces...',
                 hintStyle: GoogleFonts.outfit(color: Colors.grey[500]),
-                prefixIcon: const Icon(
+                prefixIcon: Icon(
                   Icons.search_rounded,
                   color: AppColors.primaryCyan,
                 ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
+                contentPadding: EdgeInsets.symmetric(
                   vertical: 16,
                   horizontal: 20,
                 ),
@@ -79,19 +80,19 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                         size: 64,
                         color: Colors.grey.withValues(alpha: 0.5),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         'No families found.',
                         style: GoogleFonts.outfit(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ],
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(
+                  padding: EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 8,
                   ),
@@ -100,7 +101,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                     final family = filteredFamilies[index];
                     final isPremium = family['plan'] == 'premium';
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                      padding: EdgeInsets.only(bottom: 16.0),
                       child: _buildTenantFeedRow(
                         name: family['name']?.toString() ?? 'Unknown Family',
                         sub: '${family['member_count']} members',
@@ -136,7 +137,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
     return Stack(
       children: [
         GlassCard(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -158,13 +159,13 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                     color: AppColors.primaryCyan.withValues(alpha: 0.3),
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.family_restroom_rounded,
                   color: AppColors.primaryCyan,
                   size: 24,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               // Info
               Expanded(
                 child: Column(
@@ -174,13 +175,13 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                       name,
                       style: GoogleFonts.outfit(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: Colors.white,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6.h),
                     Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       spacing: 4,
@@ -193,7 +194,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                         Text(
                           sub,
                           style: GoogleFonts.outfit(
-                            fontSize: 13,
+                            fontSize: 13.sp,
                             color: Colors.grey[400],
                           ),
                         ),
@@ -208,11 +209,11 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                                   ? AppColors.success
                                   : AppColors.error,
                             ),
-                            const SizedBox(width: 6),
+                            SizedBox(width: 6.w),
                             Text(
                               isActive ? 'Active' : 'Disabled',
                               style: GoogleFonts.outfit(
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 color: isActive
                                     ? AppColors.success
                                     : AppColors.error,
@@ -241,7 +242,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                   PopupMenuButton<String>(
                     padding: EdgeInsets.zero,
                     position: PopupMenuPosition.under,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.more_vert_rounded,
                       size: 22,
                       color: Colors.grey,
@@ -249,7 +250,7 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    color: const Color(0xFF1E1E1E), // Dark pop up
+                    color: Color(0xFF1E1E1E), // Dark pop up
                     onSelected: (val) {
                       if (val == 'toggle_premium') {
                         onTogglePremium();
@@ -269,14 +270,14 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                                   : AppColors.success,
                               size: 18,
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8.w),
                             Text(
                               isPremium ? 'Revoke PRO' : 'Upgrade to PRO',
                               style: GoogleFonts.outfit(
                                 color: isPremium
                                     ? AppColors.error
                                     : AppColors.success,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -295,12 +296,12 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
             top: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [AppColors.primaryPink, AppColors.primaryPurple],
                 ),
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topRight: Radius.circular(16),
                   bottomLeft: Radius.circular(12),
                 ),
@@ -308,14 +309,14 @@ class _AdminFamiliesViewState extends ConsumerState<AdminFamiliesView> {
                   BoxShadow(
                     color: AppColors.primaryPink.withValues(alpha: 0.4),
                     blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
               child: Text(
                 'PRO',
                 style: GoogleFonts.outfit(
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   letterSpacing: 0.5,

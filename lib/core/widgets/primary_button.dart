@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
@@ -56,7 +57,7 @@ class PrimaryButton extends StatelessWidget {
                     alpha: 0.3,
                   ),
                   blurRadius: 12,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                 ),
               ],
       ),
@@ -67,8 +68,7 @@ class PrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
           child: Center(
             child: isLoading
-                ? SizedBox(
-                    width: 24,
+                ? SizedBox(width: 24.w,
                     height: 24,
                     child: CircularProgressIndicator(
                       color: isDark ? Colors.black : Colors.white,
@@ -84,13 +84,13 @@ class PrimaryButton extends StatelessWidget {
                           color: isDark ? Colors.white : Colors.white,
                           size: 20,
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8.w),
                       ],
                       Text(
                         text,
                         style: TextStyle(
                           color: isDark ? Colors.white : Colors.white,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
                         ),

@@ -20,7 +20,7 @@ void main() {
   testWidgets('Family Wallet App smoke test - verifies splash screen loads', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(
-      const ProviderScope(
+      ProviderScope(
         child: FamilyWalletApp(),
       ),
     );

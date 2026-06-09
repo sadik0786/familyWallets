@@ -21,7 +21,7 @@ class AppColors {
 
   // Brand Accents & Gradients (SaaS Aesthetics)
   static const Color primaryPurple = Color(0xFF8A2BE2);
-  static const Color primaryCyan = Color(0xFF00F0FF);
+  static const Color primaryCyan = Color(0xFF0891B2);
   static const Color primaryBlue = Color(0xFF5F67EC);
   static const Color primaryPink = Color(0xFFFF5280);
 
@@ -54,26 +54,26 @@ class AppColors {
   static Color getCategoryColor(String category) {
     switch (category.toLowerCase()) {
       case 'grocery':
-        return const Color(0xFF10B981); // Emerald
+        return Color(0xFF10B981); // Emerald
       case 'electricity':
-        return const Color(0xFFF59E0B); // Amber
+        return Color(0xFFF59E0B); // Amber
       case 'water':
-        return const Color(0xFF3B82F6); // Blue
+        return Color(0xFF3B82F6); // Blue
       case 'gas':
-        return const Color(0xFFEF4444); // Red
+        return Color(0xFFEF4444); // Red
       case 'rent':
-        return const Color(0xFF8B5CF6); // Violet
+        return Color(0xFF8B5CF6); // Violet
       case 'internet':
-        return const Color(0xFFEC4899); // Pink
+        return Color(0xFFEC4899); // Pink
       case 'medicine':
-        return const Color(0xFF14B8A6); // Teal
+        return Color(0xFF14B8A6); // Teal
       case 'education':
-        return const Color(0xFF6366F1); // Indigo
+        return Color(0xFF6366F1); // Indigo
       case 'transport':
-        return const Color(0xFFF97316); // Orange
+        return Color(0xFFF97316); // Orange
       case 'other':
       default:
-        return const Color(0xFF6B7280); // Gray
+        return Color(0xFF6B7280); // Gray
     }
   }
 

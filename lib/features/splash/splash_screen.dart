@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: Duration(milliseconds: 1800),
     );
 
     _scaleAnimation = Tween<double>(
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeIn),
+        curve: Interval(0.0, 0.6, curve: Curves.easeIn),
       ),
     );
 
@@ -53,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -84,40 +85,39 @@ class _SplashScreenState extends State<SplashScreen>
                       BoxShadow(
                         color: AppColors.primaryPurple.withValues(alpha: 0.4),
                         blurRadius: 30,
-                        offset: const Offset(0, 10),
+                        offset: Offset(0, 10),
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.account_balance_wallet_rounded,
                     size: 58,
                     color: Colors.white,
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               Text(
                 'FAMILY WALLET',
                 style: GoogleFonts.outfit(
-                  fontSize: 28,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
-                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  color: isDark ? Colors.white : Color(0xFF0F172A),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
-                'SaaS Home Expense Manager',
+                'Smart Home Expense Manager',
                 style: GoogleFonts.outfit(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.primaryCyan,
                   letterSpacing: 0.5,
                 ),
               ),
-              const SizedBox(height: 64),
-              const SizedBox(
-                width: 24,
+              SizedBox(height: 64.h),
+              SizedBox(width: 24.w,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,

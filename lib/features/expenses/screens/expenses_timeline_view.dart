@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,7 @@ import '../../../core/widgets/empty_state_view.dart';
 import '../../contributions/controllers/contribution_controller.dart';
 import '../../expenses/controllers/expense_controller.dart';
 import '../../../core/localization/translations.dart';
+import '../../../core/widgets/dynamic_translated_text.dart';
 
 class ExpensesTimelineView extends ConsumerStatefulWidget {
   const ExpensesTimelineView({super.key});
@@ -59,6 +61,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
         'date': exp.date,
         'user': exp.addedByName,
         'receipt_url': exp.receiptUrl,
+        'payment_method': exp.paymentMethod,
       });
     }
 
@@ -113,7 +116,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: isDark
-                ? [AppColors.darkBackground, const Color(0xFF14151F)]
+                ? [AppColors.darkBackground, Color(0xFF14151F)]
                 : [AppColors.lightBackground, Colors.white],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -125,11 +128,11 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
             children: [
               // PAGE TITLE
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
                 child: Text(
                   context.tr('timelineTitle', ref),
                   style: GoogleFonts.outfit(
-                    fontSize: 24,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -137,7 +140,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
 
               // SEARCH BAR & FILTERS
               Padding(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 20.0,
                   vertical: 8.0,
                 ),
@@ -152,13 +155,13 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                       },
                       decoration: InputDecoration(
                         hintText: context.tr('searchHint', ref),
-                        prefixIcon: const Icon(
+                        prefixIcon: Icon(
                           Icons.search,
                           color: Colors.grey,
                         ),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.clear,
                                   color: Colors.grey,
                                 ),
@@ -180,7 +183,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
+                          borderSide: BorderSide(
                             color: AppColors.primaryCyan,
                             width: 1.5,
                           ),
@@ -189,7 +192,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                         fillColor: isDark ? Colors.black26 : Colors.white60,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -218,7 +221,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                               setState(() => _selectedFilter = 'Out');
                             },
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           _buildFilterCategoryDropdown(),
                         ],
                       ),
@@ -236,7 +239,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                         icon: Icons.search_off_rounded,
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 20.0,
                           vertical: 16.0,
                         ),
@@ -251,13 +254,13 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
+                                padding: EdgeInsets.symmetric(
                                   vertical: 8.0,
                                 ),
                                 child: Text(
                                   dateKey,
                                   style: GoogleFonts.outfit(
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primaryCyan,
                                   ),
@@ -266,7 +269,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                               ...dayTransactions.map(
                                 (tx) => _buildTransactionCard(tx),
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 16.h),
                             ],
                           );
                         },
@@ -288,8 +291,8 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        margin: EdgeInsets.only(right: 8),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: isSelected
@@ -304,7 +307,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
             color: isSelected
                 ? Colors.black
                 : Theme.of(context).textTheme.bodyMedium?.color,
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -329,17 +332,17 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[800] : Colors.grey[300],
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButton<String>(
         value: _selectedCategory,
-        underline: const SizedBox(),
+        underline: SizedBox(),
         style: TextStyle(
           color: Theme.of(context).textTheme.bodyMedium?.color,
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.bold,
         ),
         dropdownColor: isDark ? AppColors.darkCard : Colors.white,
@@ -360,7 +363,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
   String _formatDayHeader(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
+    final yesterday = today.subtract(Duration(days: 1));
     final txDate = DateTime(date.year, date.month, date.day);
 
     if (txDate == today) return context.tr('today', ref);
@@ -383,12 +386,12 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: AppColors.error,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: Colors.white),
       ),
       onDismissed: (direction) {
         if (isOut) {
@@ -400,8 +403,8 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6.0),
-        padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.symmetric(vertical: 6.0),
+        padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: Colors.grey.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(20),
@@ -414,33 +417,67 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: EdgeInsets.all(10.w),
                     decoration: BoxDecoration(
                       color: iconColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(icon, color: iconColor, size: 20),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          tx['description'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DynamicTranslatedText(
+                                tx['description'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.sp,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (tx['payment_method'] != null)
+                              Container(
+                                margin: EdgeInsets.only(left: 8),
+                                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                                decoration: BoxDecoration(
+                                  color: tx['payment_method'] == 'cash' 
+                                    ? Colors.green.withValues(alpha: 0.1) 
+                                    : Colors.blue.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: tx['payment_method'] == 'cash' 
+                                      ? Colors.green.withValues(alpha: 0.3) 
+                                      : Colors.blue.withValues(alpha: 0.3),
+                                  ),
+                                ),
+                                child: Text(
+                                  context.tr(tx['payment_method'].toString().toLowerCase(), ref).toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 9.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: tx['payment_method'] == 'cash' ? Colors.green : Colors.blue,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'By ${tx['user']}',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey,
+                        SizedBox(height: 4),
+                        DynamicTranslatedText(
+                          isOut 
+                            ? context.tr('addedByTemplate', ref)
+                                .replaceAll('{name}', tx['added_by_name']?.toString() ?? 'User')
+                                .replaceAll('{category}', context.tr(tx['category']?.toString().toLowerCase() ?? 'other', ref))
+                            : tx['note'] ?? context.tr('sharedMoneyLog', ref),
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 12.sp,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -451,7 +488,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -459,28 +496,28 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                   '${isOut ? "-" : "+"} ₹${tx['amount'].toStringAsFixed(2)}',
                   style: GoogleFonts.outfit(
                     fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     color: amountColor,
                   ),
                 ),
                 if (tx['receipt_url'] != null) ...[
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.receipt_long_rounded,
                         size: 10,
                         color: Colors.grey,
                       ),
-                      const SizedBox(width: 2),
+                      SizedBox(width: 2.w),
                       GestureDetector(
                         onTap: () {
                           _showReceiptDialog(context, tx['receipt_url']);
                         },
                         child: Text(
                           context.tr('receiptLabel', ref),
-                          style: const TextStyle(
-                            fontSize: 9,
+                          style: TextStyle(
+                            fontSize: 9.sp,
                             color: AppColors.primaryCyan,
                             decoration: TextDecoration.underline,
                           ),
@@ -510,10 +547,10 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(url, fit: BoxFit.cover),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close),
                 label: Text(context.tr('closeLabel', ref)),
               ),
             ],
