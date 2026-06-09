@@ -81,6 +81,7 @@ class FamilyRepository {
     final memberData = {
       'id': const Uuid().v4(),
       'family_id': familyId,
+      'family_name': name,
       'user_id': userId,
       'role': 'admin',
       'joined_at': DateTime.now().toIso8601String(),
@@ -128,6 +129,7 @@ class FamilyRepository {
       final memberData = {
         'id': const Uuid().v4(),
         'family_id': matched['id'],
+        'family_name': matched['name'],
         'user_id': userId,
         'role': 'member',
         'joined_at': DateTime.now().toIso8601String(),

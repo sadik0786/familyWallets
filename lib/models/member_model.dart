@@ -6,6 +6,7 @@ class MemberModel {
   final String userId;
   final String role; // 'admin', 'manager', 'member', 'viewer'
   final DateTime joinedAt;
+  final String? familyName;
   final UserModel? userDetails; // Expanded details from user_profiles
 
   MemberModel({
@@ -14,6 +15,7 @@ class MemberModel {
     required this.userId,
     required this.role,
     required this.joinedAt,
+    this.familyName,
     this.userDetails,
   });
 
@@ -26,6 +28,7 @@ class MemberModel {
       joinedAt: json['joined_at'] != null 
           ? DateTime.parse(json['joined_at'] as String) 
           : DateTime.now(),
+      familyName: json['family_name'] as String?,
       userDetails: json['users'] != null 
           ? UserModel.fromJson(json['users'] as Map<String, dynamic>) 
           : null,
@@ -38,6 +41,7 @@ class MemberModel {
       'family_id': familyId,
       'user_id': userId,
       'role': role,
+      'family_name': familyName,
       'joined_at': joinedAt.toIso8601String(),
     };
   }
@@ -48,6 +52,7 @@ class MemberModel {
     String? userId,
     String? role,
     DateTime? joinedAt,
+    String? familyName,
     UserModel? userDetails,
   }) {
     return MemberModel(
@@ -56,6 +61,7 @@ class MemberModel {
       userId: userId ?? this.userId,
       role: role ?? this.role,
       joinedAt: joinedAt ?? this.joinedAt,
+      familyName: familyName ?? this.familyName,
       userDetails: userDetails ?? this.userDetails,
     );
   }
