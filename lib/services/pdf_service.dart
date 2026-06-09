@@ -16,7 +16,7 @@ class PDFService {
   }) async {
     final pdf = pw.Document();
 
-    final currencyFormatter = NumberFormat('₹#,##0.00', 'en_IN');
+    final currencyFormatter = NumberFormat('Rs. #,##0.00', 'en_IN');
     final dateFormatter = DateFormat('yyyy-MM-dd');
 
     pdf.addPage(

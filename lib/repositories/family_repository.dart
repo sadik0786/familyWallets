@@ -13,16 +13,22 @@ class FamilyRepository {
   Future<FamilyModel?> getFamilyDetails(String familyId) async {
     if (_supabase.isDemoMode) {
       final list = await _localDb.getList('families');
-      final match = list.firstWhere(
+      var match = list.firstWhere(
         (element) => element['id'] == familyId,
-        orElse: () => {
+        orElse: () => <String, dynamic>{}, // Return empty map if not found
+      );
+
+      if (match.isEmpty) {
+        match = {
           'id': familyId,
           'name': 'Demo Household',
           'invite_code': 'FA-7729',
           'subscription_tier': 'free',
           'created_at': DateTime.now().toIso8601String(),
-        },
-      );
+        };
+        // Save it to local DB so subsequent updates work!
+        await _localDb.insertRow('families', match);
+      }
       return FamilyModel.fromJson(match);
     }
 
@@ -213,12 +219,19 @@ class FamilyRepository {
       return;
     }
     try {
-      await _supabase.client
+      final response = await _supabase.client
           .from('families')
           .update({'subscription_tier': tier})
-          .eq('id', familyId);
+          .eq('id', familyId)
+          .select()
+          .maybeSingle();
+      
+      if (response == null) {
+        throw Exception('Update failed. You may not have admin privileges.');
+      }
     } catch (e) {
       debugPrint('[FamilyRepository] Error updating subscription: $e');
+      throw Exception('Failed to update subscription tier: $e');
     }
   }
 

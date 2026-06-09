@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/empty_state_view.dart';
 import '../../contributions/controllers/contribution_controller.dart';
 import '../../expenses/controllers/expense_controller.dart';
+import '../../dashboard/controllers/dashboard_controller.dart';
 import '../../../core/localization/translations.dart';
 import '../../../core/widgets/dynamic_translated_text.dart';
 
@@ -36,10 +37,20 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
     final expState = ref.watch(expenseControllerProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final selectedMonth = ref.watch(selectedMonthProvider);
+
     // 1. Group contributions and expenses into unified transactions list
     final List<Map<String, dynamic>> transactions = [];
 
-    for (final con in conState.contributions) {
+    final filteredContributions = conState.contributions.where((c) {
+      return c.date.year == selectedMonth.year && c.date.month == selectedMonth.month;
+    });
+
+    final filteredExpenses = expState.expenses.where((e) {
+      return e.date.year == selectedMonth.year && e.date.month == selectedMonth.month;
+    });
+
+    for (final con in filteredContributions) {
       transactions.add({
         'id': con.id,
         'type': 'in',
@@ -51,7 +62,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
       });
     }
 
-    for (final exp in expState.expenses) {
+    for (final exp in filteredExpenses) {
       transactions.add({
         'id': exp.id,
         'type': 'out',

@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/primary_button.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../../core/localization/translations.dart';
+import '../../admin/controllers/app_config_provider.dart';
 
 class PremiumSubscriptionScreen extends ConsumerStatefulWidget {
   const PremiumSubscriptionScreen({super.key});
@@ -109,29 +110,46 @@ class _PremiumSubscriptionScreenState extends ConsumerState<PremiumSubscriptionS
               ),
               child: Column(
                 children: [
-                  Text(
-                    context.tr('yearlyPlan', ref),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryPink,
-                    ),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final config = ref.watch(appConfigControllerProvider);
+                      return Text(
+                        '${config.premiumDuration} Plan',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryPink,
+                        ),
+                      );
+                    },
                   ),
                   SizedBox(height: 8.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        '₹500',
-                        style: GoogleFonts.outfit(
-                          fontSize: 40.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final config = ref.watch(appConfigControllerProvider);
+                          return Text(
+                            '₹${config.premiumPrice}',
+                            style: GoogleFonts.outfit(
+                              fontSize: 40.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0, left: 4.0),
-                        child: Text('/ year', style: TextStyle(color: Colors.grey)),
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final config = ref.watch(appConfigControllerProvider);
+                          String durationSuffix = config.premiumDuration.toLowerCase();
+                          // e.g., '1 year' -> '/ 1 year'
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 8.0, left: 4.0),
+                            child: Text('/ $durationSuffix', style: TextStyle(color: Colors.grey)),
+                          );
+                        },
                       ),
                     ],
                   ),

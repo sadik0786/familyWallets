@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../repositories/contribution_repository.dart';
 import '../../../models/finance_models.dart';
-import '../../../services/local_db_service.dart';
+import '../../profile/controllers/profile_controller.dart';
 
 class ContributionState {
   final List<ContributionModel> contributions;
@@ -29,17 +29,26 @@ class ContributionState {
 
 class ContributionController extends StateNotifier<ContributionState> {
   final ContributionRepository _repository;
-  final String? _familyId;
+  String? _familyId;
 
-  ContributionController(this._repository, this._familyId) : super(ContributionState()) {
-    loadContributions();
+  ContributionController(this._repository) : super(ContributionState());
+
+  void updateFamilyId(String? familyId) {
+    if (_familyId == familyId) return;
+    _familyId = familyId;
+    if (_familyId != null && _familyId!.isNotEmpty) {
+      loadContributions();
+    } else {
+      state = ContributionState();
+    }
   }
 
   Future<void> loadContributions() async {
-    if (_familyId == null || _familyId.isEmpty) return;
+    final familyId = _familyId;
+    if (familyId == null || familyId.isEmpty) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final list = await _repository.getContributions(_familyId);
+      final list = await _repository.getContributions(familyId);
       state = state.copyWith(contributions: list, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
@@ -53,12 +62,13 @@ class ContributionController extends StateNotifier<ContributionState> {
     required String? note,
     required DateTime date,
   }) async {
-    if (_familyId == null) return false;
+    final familyId = _familyId;
+    if (familyId == null) return false;
     state = state.copyWith(isLoading: true);
     try {
       final contribution = ContributionModel(
         id: '',
-        familyId: _familyId,
+        familyId: familyId,
         amount: amount,
         contributorId: contributorId,
         contributorName: contributorName,
@@ -80,9 +90,10 @@ class ContributionController extends StateNotifier<ContributionState> {
   }
 
   Future<void> deleteContribution(String id) async {
-    if (_familyId == null) return;
+    final familyId = _familyId;
+    if (familyId == null) return;
     try {
-      await _repository.deleteContribution(id, _familyId);
+      await _repository.deleteContribution(id, familyId);
       state = state.copyWith(
         contributions: state.contributions.where((element) => element.id != id).toList(),
       );
@@ -97,10 +108,16 @@ final contributionRepositoryProvider = Provider<ContributionRepository>((ref) =>
 
 final contributionControllerProvider = StateNotifierProvider<ContributionController, ContributionState>((ref) {
   final repo = ref.watch(contributionRepositoryProvider);
+  final controller = ContributionController(repo);
   
-  // Fetch current family id from shared preferences or active user
-  final localDb = ref.watch(localDbServiceProvider);
-  final familyId = localDb.getString('current_family_id') ?? '';
+  ref.listen(profileControllerProvider, (previous, next) {
+    if (previous?.family?.id != next.family?.id) {
+      controller.updateFamilyId(next.family?.id);
+    }
+  });
 
-  return ContributionController(repo, familyId);
+  final initialFamilyId = ref.read(profileControllerProvider).family?.id;
+  controller.updateFamilyId(initialFamilyId);
+
+  return controller;
 });

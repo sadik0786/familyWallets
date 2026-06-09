@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../repositories/expense_repository.dart';
 import '../../../models/finance_models.dart';
 import '../../../services/local_db_service.dart';
+import '../../profile/controllers/profile_controller.dart';
 import 'package:uuid/uuid.dart';
 
 class ExpenseState {
@@ -34,19 +35,28 @@ class ExpenseState {
 
 class ExpenseController extends StateNotifier<ExpenseState> {
   final ExpenseRepository _repository;
-  final String? _familyId;
+  String? _familyId;
   final LocalDbService _localDb = LocalDbService();
 
-  ExpenseController(this._repository, this._familyId) : super(ExpenseState()) {
-    loadExpensesAndBudgets();
+  ExpenseController(this._repository) : super(ExpenseState());
+
+  void updateFamilyId(String? familyId) {
+    if (_familyId == familyId) return;
+    _familyId = familyId;
+    if (_familyId != null && _familyId!.isNotEmpty) {
+      loadExpensesAndBudgets();
+    } else {
+      state = ExpenseState();
+    }
   }
 
   Future<void> loadExpensesAndBudgets() async {
-    if (_familyId == null || _familyId.isEmpty) return;
+    final familyId = _familyId;
+    if (familyId == null || familyId.isEmpty) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final list = await _repository.getExpenses(_familyId);
-      final limits = await _repository.getBudgetLimits(_familyId);
+      final list = await _repository.getExpenses(familyId);
+      final limits = await _repository.getBudgetLimits(familyId);
       state = state.copyWith(expenses: list, budgetLimits: limits, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
@@ -63,12 +73,13 @@ class ExpenseController extends StateNotifier<ExpenseState> {
     required String? receiptUrl,
     required String? paymentMethod,
   }) async {
-    if (_familyId == null) return false;
+    final familyId = _familyId;
+    if (familyId == null) return false;
     state = state.copyWith(isLoading: true);
     try {
       final expense = ExpenseModel(
         id: '',
-        familyId: _familyId,
+        familyId: familyId,
         amount: amount,
         category: category,
         description: description,
@@ -97,9 +108,10 @@ class ExpenseController extends StateNotifier<ExpenseState> {
   }
 
   Future<void> deleteExpense(String id) async {
-    if (_familyId == null) return;
+    final familyId = _familyId;
+    if (familyId == null) return;
     try {
-      await _repository.deleteExpense(id, _familyId);
+      await _repository.deleteExpense(id, familyId);
       state = state.copyWith(
         expenses: state.expenses.where((element) => element.id != id).toList(),
       );
@@ -109,19 +121,20 @@ class ExpenseController extends StateNotifier<ExpenseState> {
   }
 
   Future<void> saveBudget(String category, double amount) async {
-    if (_familyId == null) return;
+    final familyId = _familyId;
+    if (familyId == null) return;
     state = state.copyWith(isLoading: true);
     try {
       final limit = BudgetLimitModel(
         id: '',
-        familyId: _familyId,
+        familyId: familyId,
         category: category,
         limitAmount: amount,
         month: DateTime.now().month,
         year: DateTime.now().year,
       );
       await _repository.saveBudgetLimit(limit);
-      final limits = await _repository.getBudgetLimits(_familyId);
+      final limits = await _repository.getBudgetLimits(familyId);
       state = state.copyWith(budgetLimits: limits, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
@@ -168,7 +181,17 @@ final expenseRepositoryProvider = Provider<ExpenseRepository>((ref) => ExpenseRe
 
 final expenseControllerProvider = StateNotifierProvider<ExpenseController, ExpenseState>((ref) {
   final repo = ref.watch(expenseRepositoryProvider);
-  final localDb = ref.watch(localDbServiceProvider);
-  final familyId = localDb.getString('current_family_id') ?? '';
-  return ExpenseController(repo, familyId);
+  final controller = ExpenseController(repo);
+  
+  ref.listen(profileControllerProvider, (previous, next) {
+    if (previous?.family?.id != next.family?.id) {
+      controller.updateFamilyId(next.family?.id);
+    }
+  });
+
+  // Initial load
+  final initialFamilyId = ref.read(profileControllerProvider).family?.id;
+  controller.updateFamilyId(initialFamilyId);
+
+  return controller;
 });

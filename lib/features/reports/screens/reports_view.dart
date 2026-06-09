@@ -54,9 +54,21 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
     final selectedMonthName = monthNames[selectedMonth.month - 1];
     final formattedMonthYear = '$selectedMonthName ${selectedMonth.year}';
 
+    // Filter expenses by selected month/year
+    final filteredExpenses = expState.expenses.where((e) {
+      return e.date.year == selectedMonth.year &&
+          e.date.month == selectedMonth.month;
+    }).toList();
+
+    // Filter contributions by selected month/year
+    final filteredContributions = conState.contributions.where((c) {
+      return c.date.year == selectedMonth.year &&
+          c.date.month == selectedMonth.month;
+    }).toList();
+
     // Group expenses by category
     final categoryTotals = <String, double>{};
-    for (final exp in expState.expenses) {
+    for (final exp in filteredExpenses) {
       categoryTotals[exp.category] =
           (categoryTotals[exp.category] ?? 0) + exp.amount;
     }
@@ -81,7 +93,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
       familyName: familyName,
       totalContributions: dashboardData.totalContributions,
       totalExpenses: dashboardData.totalExpenses,
-      expenses: expState.expenses,
+      expenses: filteredExpenses,
       locale: profileState.language,
     );
 
@@ -110,7 +122,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
           ),
         ),
         child: SafeArea(
-          child: expState.expenses.isEmpty
+          child: filteredExpenses.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +134,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                       ),
                       SizedBox(height: 16.h),
                       Text(
-                        'No data to generate reports.',
+                        'No data found for $formattedMonthYear.',
                         style: TextStyle(color: Colors.grey[500]),
                       ),
                     ],
@@ -174,7 +186,8 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                         GlassCard(
                           child: Column(
                             children: [
-                              SizedBox(height: 220.h,
+                              SizedBox(
+                                height: 220.h,
                                 child: PieChart(
                                   PieChartData(
                                     pieTouchData: PieTouchData(
@@ -324,10 +337,7 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                               SizedBox(height: 16.h),
                               Text(
                                 aiReport.content,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  height: 1.6,
-                                ),
+                                style: TextStyle(fontSize: 14.sp, height: 1.6),
                               ),
                               SizedBox(height: 24.h),
                               if (aiReport.warnings.isNotEmpty) ...[
@@ -504,8 +514,8 @@ class _ReportsViewState extends ConsumerState<ReportsView> {
                                         dashboardData.totalContributions,
                                     totalExpenses: dashboardData.totalExpenses,
                                     balance: dashboardData.remainingBalance,
-                                    contributions: conState.contributions,
-                                    expenses: expState.expenses,
+                                    contributions: filteredContributions,
+                                    expenses: filteredExpenses,
                                     monthYear: formattedMonthYear,
                                   );
                                 },

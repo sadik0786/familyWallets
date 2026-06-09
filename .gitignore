@@ -99,3 +99,4 @@ android/key.properties
 
 # Supabase SQL exports
 supabase_schema.sql
+delete_all_data.sql

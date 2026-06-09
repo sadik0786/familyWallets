@@ -55,7 +55,7 @@ class Translations {
       'moneyIn': 'Money In',
       'moneyOut': 'Money Out',
       'upgradeSuccess':
-          'Successfully upgraded to PREMIUM tier! Limits unlocked.',
+          'Successfully upgraded to PREMIUM tier! Limits unlocked. Contact 7303224509 Admin for more information',
       'currentPlan': 'Current Subscription:',
       'logout': 'Sign Out',
       'cancel': 'Cancel',
@@ -238,7 +238,8 @@ class Translations {
       'all': 'सभी',
       'moneyIn': 'पैसे आए',
       'moneyOut': 'पैसे गए',
-      'upgradeSuccess': 'सफलतापूर्वक प्रीमियम योजना में अपग्रेड किया गया!',
+      'upgradeSuccess':
+          'सफलतापूर्वक प्रीमियम योजना में अपग्रेड किया गया! अधिक जानकारी के लिए 7303224509 पर संपर्क करें।',
       'currentPlan': 'सक्रिय योजना:',
       'logout': 'साइन आउट',
       'cancel': 'रद्द करें',

@@ -112,4 +112,77 @@ class AdminRepository {
       return false;
     }
   }
+
+  Future<String> getGlobalPremiumPrice() async {
+    if (_supabase.isDemoMode) return '500';
+
+    try {
+      final res = await _supabase.client
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'premium_price')
+          .maybeSingle();
+      
+      if (res != null) {
+        return res['value'] as String;
+      }
+      return '500';
+    } catch (e) {
+      debugPrint('[AdminRepository] Error getting premium price: $e');
+      return '500';
+    }
+  }
+
+  Future<bool> updateGlobalPremiumPrice(String price) async {
+    if (_supabase.isDemoMode) return true;
+
+    try {
+      // Upsert logic for app settings
+      await _supabase.client.from('app_settings').upsert({
+        'key': 'premium_price',
+        'value': price,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+      return true;
+    } catch (e) {
+      debugPrint('[AdminRepository] Error updating premium price: $e');
+      return false;
+    }
+  }
+
+  Future<String> getGlobalPremiumDuration() async {
+    if (_supabase.isDemoMode) return '1 Year';
+
+    try {
+      final res = await _supabase.client
+          .from('app_settings')
+          .select('value')
+          .eq('key', 'premium_duration')
+          .maybeSingle();
+      
+      if (res != null) {
+        return res['value'] as String;
+      }
+      return '1 Year';
+    } catch (e) {
+      debugPrint('[AdminRepository] Error getting premium duration: $e');
+      return '1 Year';
+    }
+  }
+
+  Future<bool> updateGlobalPremiumDuration(String duration) async {
+    if (_supabase.isDemoMode) return true;
+
+    try {
+      await _supabase.client.from('app_settings').upsert({
+        'key': 'premium_duration',
+        'value': duration,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+      return true;
+    } catch (e) {
+      debugPrint('[AdminRepository] Error updating premium duration: $e');
+      return false;
+    }
+  }
 }
