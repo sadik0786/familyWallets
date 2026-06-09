@@ -10,7 +10,6 @@ import '../../../services/ocr_service.dart';
 import '../../expenses/controllers/expense_controller.dart';
 import '../../auth/controllers/auth_controller.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../services/ai_insights_service.dart';
 import '../../../core/localization/translations.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
@@ -128,7 +127,10 @@ class _OcrScannerScreenState extends ConsumerState<OcrScannerScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: CustomAppBar(title: context.tr('ocrTitle', ref), centerTitle: true),
+      appBar: CustomAppBar(
+        title: context.tr('ocrTitle', ref),
+        centerTitle: true,
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
