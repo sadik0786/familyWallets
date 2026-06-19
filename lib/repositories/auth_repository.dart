@@ -39,18 +39,17 @@ class AuthRepository {
   ) async {
     try {
       final now = DateTime.now().toUtc().toIso8601String();
-      // Using insert instead of upsert to avoid RLS UPDATE policy issues on new accounts
-      await _supabase.client.from('users').insert({
+      await _supabase.client.from('users').upsert({
         'id': id,
         'email': email,
         'display_name': displayName,
         'role': 'user',
         'created_at': now,
         'updated_at': now,
-      });
+      }, onConflict: 'id');
     } catch (e) {
       debugPrint(
-        '[AuthRepository] Could not insert user profile (non-fatal): $e',
+        '[AuthRepository] Could not upsert user profile (non-fatal): $e',
       );
     }
   }
@@ -75,17 +74,19 @@ class AuthRepository {
       if (authUser == null) return null;
 
       // Try users table first
-      try {
-        final res = await _supabase.client
-            .from('users')
-            .select()
-            .eq('id', authUser.id)
-            .maybeSingle();
-        if (res != null) return UserModel.fromJson(res);
-      } catch (_) {}
-
-      // Fallback: build from auth metadata (never returns null if session is active)
-      return _userFromAuth(authUser);
+      final res = await _supabase.client
+          .from('users')
+          .select()
+          .eq('id', authUser.id)
+          .maybeSingle();
+          
+      if (res != null) {
+        return UserModel.fromJson(res);
+      } else {
+        // If not in users table, sign out to invalidate session
+        await _supabase.client.auth.signOut();
+        return null;
+      }
     } catch (e) {
       debugPrint('[AuthRepository] Error fetching user: $e');
       return null;
@@ -114,17 +115,19 @@ class AuthRepository {
       final authUser = response.user;
       if (authUser == null) return null;
 
-      // Try to get full profile from users table; fallback to auth data
-      try {
-        final res = await _supabase.client
-            .from('users')
-            .select()
-            .eq('id', authUser.id)
-            .maybeSingle();
-        if (res != null) return UserModel.fromJson(res);
-      } catch (_) {}
-
-      return _userFromAuth(authUser, email: email);
+      // Enforce that the user profile exists in the database
+      final res = await _supabase.client
+          .from('users')
+          .select()
+          .eq('id', authUser.id)
+          .maybeSingle();
+          
+      if (res != null) {
+        return UserModel.fromJson(res);
+      } else {
+        await _supabase.client.auth.signOut();
+        throw Exception('User not found in database.');
+      }
     } catch (e) {
       throw Exception(e.toString().replaceAll('Exception: ', ''));
     }

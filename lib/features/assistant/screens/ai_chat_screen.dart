@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../expenses/controllers/expense_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../../../core/localization/translations.dart';
 import '../../../core/widgets/custom_app_bar.dart';
+import '../../auth/controllers/auth_controller.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Message {
   final String text;
@@ -30,18 +32,36 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   final _scrollController = ScrollController();
   bool _isTyping = false;
 
+  GenerativeModel? _model;
+  ChatSession? _chatSession;
+
   @override
   void initState() {
     super.initState();
     // Add localized welcoming message
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final welcomeText = context.tr('welcomeMessage', ref);
+      final user = ref.read(authControllerProvider).user;
+      final name = user != null ? user.displayName.split(' ').first : 'there';
+
+      String welcomeText = context.tr('welcomeMessage', ref);
+      if (welcomeText.startsWith('Hello!')) {
+        welcomeText = welcomeText.replaceFirst('Hello!', 'Hello $name!');
+      } else {
+        welcomeText = 'Hello $name! $welcomeText';
+      }
+
       setState(() {
         _messages.add(
           Message(text: welcomeText, isUser: false, time: DateTime.now()),
         );
       });
     });
+
+    final apiKey = dotenv.env['GEMINI_API_KEY'];
+    if (apiKey != null && apiKey.isNotEmpty) {
+      _model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
+      _chatSession = _model!.startChat();
+    }
   }
 
   @override
@@ -76,74 +96,34 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 
     // Context analysis
     final dashboard = ref.read(dashboardControllerProvider);
-    final expenses = ref.read(expenseControllerProvider).expenses;
     final locale = ref.read(profileControllerProvider).language;
 
     await Future.delayed(Duration(milliseconds: 1500));
 
-    // Dynamic response logic based on user queries and locale
+    // Dynamic response logic
     String reply = '';
-    final query = text.toLowerCase();
 
-    if (query.contains('balance') ||
-        query.contains('status') ||
-        query.contains('शेष') ||
-        query.contains('saldo')) {
-      if (locale == 'hi') {
-        reply =
-            'आपका शेष राशि वर्तमान में ₹${dashboard.remainingBalance.toStringAsFixed(2)} है। यह ₹${dashboard.totalContributions.toStringAsFixed(2)} कुल योगदान में से ₹${dashboard.totalExpenses.toStringAsFixed(2)} कुल खर्चों को घटाकर गणना की जाती है।';
-      } else if (locale == 'es') {
-        reply =
-            'Su saldo restante actual es de ₹${dashboard.remainingBalance.toStringAsFixed(2)}. Esto se calcula como ₹${dashboard.totalContributions.toStringAsFixed(2)} de contribuciones totales menos ₹${dashboard.totalExpenses.toStringAsFixed(2)} de gastos totales.';
-      } else {
-        reply =
-            'Your remaining balance is currently ₹${dashboard.remainingBalance.toStringAsFixed(2)}. This is calculated as ₹${dashboard.totalContributions.toStringAsFixed(2)} total contributions minus ₹${dashboard.totalExpenses.toStringAsFixed(2)} total expenses.';
-      }
-    } else if (query.contains('save') ||
-        query.contains('tips') ||
-        query.contains('बचत') ||
-        query.contains('ahorrar') ||
-        query.contains('consejos')) {
-      if (locale == 'hi') {
-        reply =
-            'घरेलू बचत बढ़ाने के लिए:\n1. थोक में खरीदने के लिए किराना यात्राओं को समेकित करें—इससे भोजन खर्च में 12% की कमी आ सकती है।\n2. हमने बिजली की लागत में वृद्धि देखी है—₹5,000 की मासिक सीमा निर्धारित करने पर विचार करें।\n3. सुनिश्चित करें कि एक स्थिर नकदी बफर बनाए रखने के लिए हर महीने की 1 तारीख को योगदान दर्ज किया जाए।';
-      } else if (locale == 'es') {
-        reply =
-            'Para aumentar los ahorros en su hogar:\n1. Consolide los viajes al supermercado para comprar al por mayor; esto podría reducir los gastos de comida en un 12%.\n2. Notamos picos en los costos de electricidad; considere establecer un límite mensual de ₹5,000.\n3. Asegúrese de registrar las contribuciones el día 1 de cada mes para mantener un colchón de efectivo estable.';
-      } else {
-        reply =
-            'To boost savings in your household:\n1. Consolidate Grocery trips to buy in bulk—this could reduce food outlays by 12%.\n2. We noticed electricity costs spikes—consider setting a monthly cap of ₹5,000.\n3. Make sure contributions are logged on the 1st of every month to preserve a steady cash buffer.';
-      }
-    } else if (query.contains('grocery') ||
-        query.contains('food') ||
-        query.contains('किराना') ||
-        query.contains('भोजन') ||
-        query.contains('comida') ||
-        query.contains('supermercado')) {
-      final groceryTotal = expenses
-          .where((e) => e.category == 'Grocery')
-          .fold(0.0, (s, e) => s + e.amount);
-      if (locale == 'hi') {
-        reply =
-            'कुल किराना खर्च ₹${groceryTotal.toStringAsFixed(2)} है। यदि यह अधिक लगता है, तो भोजन को कैलेंडर पर दर्ज करने और थोक खरीदारी की योजना बनाने का प्रयास करें।';
-      } else if (locale == 'es') {
-        reply =
-            'El gasto total en comestibles es de ₹${groceryTotal.toStringAsFixed(2)}. Si esto le parece alto, intente registrar las comidas en un calendario y planificar compras al por mayor.';
-      } else {
-        reply =
-            'Total Grocery spending is ₹${groceryTotal.toStringAsFixed(2)}. If this feels high, try logging meals on a calendar and planning bulk purchases.';
+    if (_chatSession != null) {
+      try {
+        final prompt =
+            '''
+You are FamilyWallet AI, a helpful family finance assistant.
+User's Language: $locale
+Household Context:
+- Total Contributions: ₹${dashboard.totalContributions.toStringAsFixed(2)}
+- Total Expenses: ₹${dashboard.totalExpenses.toStringAsFixed(2)}
+- Remaining Balance: ₹${dashboard.remainingBalance.toStringAsFixed(2)}
+User Query: $text
+Reply concisely in the user's language.
+''';
+        final response = await _chatSession!.sendMessage(Content.text(prompt));
+        reply = response.text ?? 'I could not generate a response.';
+      } catch (e) {
+        reply = 'Error connecting to AI: $e';
       }
     } else {
-      if (locale == 'hi') {
-        reply =
-            'मैंने आपके साझा घरेलू बहीखाता की जांच की है। ₹${dashboard.totalContributions.toStringAsFixed(2)} के कुल योगदान सूचकांक और ₹${dashboard.totalExpenses.toStringAsFixed(2)} के मासिक खर्च के साथ, आप वर्तमान में ${((dashboard.remainingBalance / (dashboard.totalContributions == 0 ? 1 : dashboard.totalContributions)) * 100).toStringAsFixed(0)}% का बचत बफर अनुपात बनाए रख रहे हैं। आप एक स्थिर पथ पर हैं!';
-      } else if (locale == 'es') {
-        reply =
-            'He examinado el libro contable compartido de su hogar. Con un índice de contribución total de ₹${dashboard.totalContributions.toStringAsFixed(2)} y gastos mensuales de ₹${dashboard.totalExpenses.toStringAsFixed(2)}, actualmente mantiene una relación de colchón de ahorro del ${((dashboard.remainingBalance / (dashboard.totalContributions == 0 ? 1 : dashboard.totalContributions)) * 100).toStringAsFixed(0)}%. ¡Está en un camino estable!';
-      } else {
-        reply =
-            'I\'ve examined your shared household ledger. With a total contribution index of ₹${dashboard.totalContributions.toStringAsFixed(2)} and monthly expenses of ₹${dashboard.totalExpenses.toStringAsFixed(2)}, you are currently keeping a savings buffer ratio of ${((dashboard.remainingBalance / (dashboard.totalContributions == 0 ? 1 : dashboard.totalContributions)) * 100).toStringAsFixed(0)}%. You are on a stable path!';
-      }
+      reply =
+          'GEMINI_API_KEY is missing in .env file. Please add it to enable real AI chat.';
     }
 
     setState(() {
@@ -158,7 +138,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: CustomAppBar(title: context.tr('aiCoachTitle', ref), centerTitle: true),
+      appBar: CustomAppBar(
+        title: context.tr('aiCoachTitle', ref),
+        centerTitle: true,
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -186,10 +169,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
 
             if (_isTyping)
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 8,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 child: Row(
                   children: [
                     Icon(
@@ -200,7 +180,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
                     SizedBox(width: 8.w),
                     Text(
                       context.tr('coachThinking', ref),
-                      style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: Colors.grey[500],
+                      ),
                     ),
                   ],
                 ),
@@ -247,11 +230,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
                     radius: 24,
                     backgroundColor: AppColors.primaryPurple,
                     child: IconButton(
-                      icon: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 18,
-                      ),
+                      icon: Icon(Icons.send, color: Colors.white, size: 18),
                       onPressed: _sendMessage,
                     ),
                   ),

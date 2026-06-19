@@ -66,7 +66,7 @@ class FamilyRepository {
   }
 
   Future<FamilyModel?> createFamily(String name, String userId, String displayName) async {
-    final inviteCode = 'FW-${const Uuid().v4().substring(0, 4).toUpperCase()}';
+    final inviteCode = 'FM${const Uuid().v4().substring(0, 4).toUpperCase()}';
     final familyId = const Uuid().v4();
 
     final familyData = {
