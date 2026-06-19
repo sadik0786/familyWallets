@@ -490,7 +490,7 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                                     .tr('addedByTemplate', ref)
                                     .replaceAll(
                                       '{name}',
-                                      tx['added_by_name']?.toString() ?? 'User',
+                                      tx['user']?.toString() ?? 'User',
                                     )
                                     .replaceAll(
                                       '{category}',
@@ -502,7 +502,12 @@ class _ExpensesTimelineViewState extends ConsumerState<ExpensesTimelineView> {
                                         ref,
                                       ),
                                     )
-                              : tx['note'] ?? context.tr('sharedMoneyLog', ref),
+                              : context
+                                    .tr('contributionTemplate', ref)
+                                    .replaceAll(
+                                      '{name}',
+                                      tx['user']?.toString() ?? 'User',
+                                    ),
                           style: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 12.sp,
