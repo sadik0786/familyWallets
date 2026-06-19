@@ -35,21 +35,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final isEmail = input.contains('@');
 
     final success = isEmail
-        ? await ref.read(authControllerProvider.notifier).login(input, _passwordController.text)
-        : await ref.read(authControllerProvider.notifier).loginWithPhone(input, _passwordController.text);
+        ? await ref
+              .read(authControllerProvider.notifier)
+              .login(input, _passwordController.text)
+        : await ref
+              .read(authControllerProvider.notifier)
+              .loginWithPhone(input, _passwordController.text);
 
     if (!mounted) return;
 
+    FocusScope.of(context).unfocus();
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     if (success) {
-      context.go('/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle_rounded, color: Colors.white),
+              SizedBox(width: 10),
+              Text(
+                'Login successful! Welcome back 👋',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green[700],
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      await Future.delayed(Duration(seconds: 2));
+      if (mounted) context.go('/home');
     } else {
-      final err = ref.read(authControllerProvider).errorMessage;
-      if (err != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(err),
+      final err =
+          ref.read(authControllerProvider).errorMessage ??
+          'Login failed. Please try again.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error_outline_rounded, color: Colors.white),
+              SizedBox(width: 10),
+              Expanded(child: Text(err)),
+            ],
+          ),
           backgroundColor: AppColors.error,
-        ));
-      }
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 4),
+        ),
+      );
     }
   }
 
@@ -117,12 +152,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           // Mobile Number
                           TextFormField(
                             controller: _mobileController,
-                            keyboardType: TextInputType.emailAddress, // allow both phone and email keyboard
-                            decoration: _inputDecoration('Mobile Number', Icons.phone_outlined),
+                            keyboardType: TextInputType
+                                .emailAddress, // allow both phone and email keyboard
+                            decoration: _inputDecoration(
+                              'Mobile Number',
+                              Icons.phone_outlined,
+                            ),
                             validator: (val) {
-                              if (val == null || val.isEmpty) return 'Enter your mobile number';
-                              if (val.contains('@')) return null; // Allow email for admin
-                              if (val.replaceAll(RegExp(r'\D'), '').length < 10) return 'Enter a valid mobile number';
+                              if (val == null || val.isEmpty) {
+                                return 'Enter your mobile number';
+                              }
+                              if (val.contains('@')) {
+                                return null; // Allow email for admin
+                              }
+                              if (val.replaceAll(RegExp(r'\D'), '').length <
+                                  10) {
+                                return 'Enter a valid mobile number';
+                              }
                               return null;
                             },
                           ),
@@ -132,17 +178,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
-                            decoration: _inputDecoration('Password', Icons.lock_outline).copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                                  color: Colors.grey,
+                            decoration:
+                                _inputDecoration(
+                                  'Password',
+                                  Icons.lock_outline,
+                                ).copyWith(
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                              ),
-                            ),
                             validator: (val) {
-                              if (val == null || val.length < 6) return 'Password must be at least 6 characters';
+                              if (val == null || val.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
                               return null;
                             },
                           ),
@@ -195,7 +252,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       labelStyle: TextStyle(color: Colors.grey),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+        borderSide: BorderSide(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

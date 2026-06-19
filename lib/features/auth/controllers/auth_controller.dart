@@ -39,7 +39,15 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> restoreSession() async {
     state = state.copyWith(isLoading: true);
-    final user = await _repository.getCurrentUser();
+    
+    // Run both user fetching and a minimum 2-second delay in parallel
+    // This ensures the splash screen animation has time to finish before redirecting
+    final results = await Future.wait([
+      _repository.getCurrentUser(),
+      Future.delayed(const Duration(seconds: 2)),
+    ]);
+    
+    final user = results[0] as UserModel?;
     state = AuthState(user: user, isSessionRestored: true);
   }
 
@@ -65,7 +73,9 @@ class AuthController extends StateNotifier<AuthState> {
     try {
       final user = await _repository.signUpWithEmail(email, password, displayName);
       if (user != null) {
-        state = AuthState(user: user, isSessionRestored: true);
+        // Sign out immediately so user has to manually login
+        await _repository.signOut();
+        state = AuthState(user: null, isSessionRestored: true);
         return true;
       } else {
         state = state.copyWith(isLoading: false, errorMessage: 'Registration failed.');
@@ -128,7 +138,9 @@ class AuthController extends StateNotifier<AuthState> {
     try {
       final user = await _repository.signUpWithPhone(phone, password, displayName);
       if (user != null) {
-        state = AuthState(user: user, isSessionRestored: true);
+        // Sign out immediately so user has to manually login
+        await _repository.signOut();
+        state = AuthState(user: null, isSessionRestored: true);
         return true;
       } else {
         state = state.copyWith(isLoading: false, errorMessage: 'Registration failed.');

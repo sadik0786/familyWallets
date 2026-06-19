@@ -170,4 +170,19 @@ class AdminRepository {
       return false;
     }
   }
+
+  Future<bool> deleteUser(String userId) async {
+    if (_supabase.isDemoMode) return true;
+
+    try {
+      await _supabase.client.rpc(
+        'delete_user_completely',
+        params: {'target_user_id': userId},
+      );
+      return true;
+    } catch (e) {
+      debugPrint('[AdminRepository] Error deleting user: $e');
+      return false;
+    }
+  }
 }

@@ -57,6 +57,16 @@ class AdminController extends StateNotifier<AdminState> {
       fetchStats();
     }
   }
+
+  Future<void> deleteUser(String userId) async {
+    state = state.copyWith(isLoading: true);
+    final success = await _repository.deleteUser(userId);
+    if (success) {
+      await fetchStats();
+    } else {
+      state = state.copyWith(isLoading: false, errorMessage: 'Failed to delete user.');
+    }
+  }
 }
 
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {

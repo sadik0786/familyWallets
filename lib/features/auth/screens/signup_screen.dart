@@ -33,9 +33,23 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 
   Future<void> _handleSignup() async {
-    if (!_formKey.currentState!.validate()) return;
+    FocusScope.of(context).unfocus();
+    ScaffoldMessenger.of(context).clearSnackBars();
 
-    final success = await ref.read(authControllerProvider.notifier).signupWithPhone(
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill all fields correctly.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .signupWithPhone(
           _mobileController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),
@@ -44,15 +58,43 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     if (!mounted) return;
 
     if (success) {
-      context.go('/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle_rounded, color: Colors.white),
+              SizedBox(width: 10),
+              Text(
+                'Account created successfully! Please login 🎉',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.green[700],
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      await Future.delayed(Duration(seconds: 2));
+      if (mounted) context.go('/login');
     } else {
-      final err = ref.read(authControllerProvider).errorMessage;
-      if (err != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(err),
+      final err =
+          ref.read(authControllerProvider).errorMessage ??
+          'Registration failed. Please try again.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error_outline_rounded, color: Colors.white),
+              SizedBox(width: 10),
+              Expanded(child: Text(err)),
+            ],
+          ),
           backgroundColor: AppColors.error,
-        ));
-      }
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 4),
+        ),
+      );
     }
   }
 
@@ -121,9 +163,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           TextFormField(
                             controller: _nameController,
                             textCapitalization: TextCapitalization.words,
-                            decoration: _inputDecoration('Full Name', Icons.person_outline),
+                            decoration: _inputDecoration(
+                              'Full Name',
+                              Icons.person_outline,
+                            ),
                             validator: (val) {
-                              if (val == null || val.trim().isEmpty) return 'Enter your name';
+                              if (val == null || val.trim().isEmpty) {
+                                return 'Enter your name';
+                              }
                               return null;
                             },
                           ),
@@ -133,10 +180,18 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           TextFormField(
                             controller: _mobileController,
                             keyboardType: TextInputType.phone,
-                            decoration: _inputDecoration('Mobile Number', Icons.phone_outlined),
+                            decoration: _inputDecoration(
+                              'Mobile Number',
+                              Icons.phone_outlined,
+                            ),
                             validator: (val) {
-                              if (val == null || val.isEmpty) return 'Enter your mobile number';
-                              if (val.replaceAll(RegExp(r'\D'), '').length < 10) return 'Enter a valid 10-digit mobile number';
+                              if (val == null || val.isEmpty) {
+                                return 'Enter your mobile number';
+                              }
+                              if (val.replaceAll(RegExp(r'\D'), '').length <
+                                  10) {
+                                return 'Enter a valid 10-digit mobile number';
+                              }
                               return null;
                             },
                           ),
@@ -146,7 +201,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: _inputDecoration('Email (Optional)', Icons.email_outlined),
+                            decoration: _inputDecoration(
+                              'Email (Optional)',
+                              Icons.email_outlined,
+                            ),
                             // No validator — optional field
                           ),
                           SizedBox(height: 16.h),
@@ -155,17 +213,28 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           TextFormField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
-                            decoration: _inputDecoration('Password', Icons.lock_outline).copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                                  color: Colors.grey,
+                            decoration:
+                                _inputDecoration(
+                                  'Password',
+                                  Icons.lock_outline,
+                                ).copyWith(
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                              ),
-                            ),
                             validator: (val) {
-                              if (val == null || val.length < 6) return 'Password must be at least 6 characters';
+                              if (val == null || val.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
                               return null;
                             },
                           ),
@@ -218,7 +287,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       labelStyle: TextStyle(color: Colors.grey),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+        borderSide: BorderSide(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

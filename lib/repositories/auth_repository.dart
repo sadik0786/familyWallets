@@ -31,7 +31,7 @@ class AuthRepository {
     );
   }
 
-  // Try to insert user profile — non-fatal, errors are logged only
+  // Try to insert user profile — fatal if it fails for other reasons, since they can't login without it
   Future<void> _upsertUserProfile(
     String id,
     String email,
@@ -39,18 +39,21 @@ class AuthRepository {
   ) async {
     try {
       final now = DateTime.now().toUtc().toIso8601String();
-      await _supabase.client.from('users').upsert({
+      await _supabase.client.from('users').insert({
         'id': id,
         'email': email,
         'display_name': displayName,
         'role': 'user',
         'created_at': now,
         'updated_at': now,
-      }, onConflict: 'id');
+      });
     } catch (e) {
-      debugPrint(
-        '[AuthRepository] Could not upsert user profile (non-fatal): $e',
-      );
+      final msg = e.toString().toLowerCase();
+      if (msg.contains('duplicate') || msg.contains('unique')) {
+        // User already exists in public.users, which is fine
+        return;
+      }
+      rethrow;
     }
   }
 
@@ -73,19 +76,24 @@ class AuthRepository {
       final authUser = _supabase.client.auth.currentUser;
       if (authUser == null) return null;
 
-      // Try users table first
-      final res = await _supabase.client
-          .from('users')
-          .select()
-          .eq('id', authUser.id)
-          .maybeSingle();
-          
-      if (res != null) {
-        return UserModel.fromJson(res);
-      } else {
-        // If not in users table, sign out to invalidate session
-        await _supabase.client.auth.signOut();
-        return null;
+      try {
+        final res = await _supabase.client
+            .from('users')
+            .select()
+            .eq('id', authUser.id)
+            .maybeSingle();
+
+        if (res != null) {
+          return UserModel.fromJson(res);
+        } else {
+          // User exists in auth but not in public.users table — sign out
+          await _supabase.client.auth.signOut();
+          return null;
+        }
+      } catch (e) {
+        // DB query failed (e.g. migration/RLS issue) — fallback to auth user
+        debugPrint('[AuthRepository] DB query failed, using auth fallback: $e');
+        return _userFromAuth(authUser);
       }
     } catch (e) {
       debugPrint('[AuthRepository] Error fetching user: $e');
@@ -121,12 +129,12 @@ class AuthRepository {
           .select()
           .eq('id', authUser.id)
           .maybeSingle();
-          
+
       if (res != null) {
         return UserModel.fromJson(res);
       } else {
         await _supabase.client.auth.signOut();
-        throw Exception('User not found in database.');
+        throw Exception('User not found');
       }
     } catch (e) {
       throw Exception(e.toString().replaceAll('Exception: ', ''));
@@ -165,12 +173,60 @@ class AuthRepository {
       final authUser = response.user;
       if (authUser == null) return null;
 
-      // Non-fatal: try to create profile row
+      // Try to create profile row in users table
       await _upsertUserProfile(authUser.id, email, displayName);
 
+      // Try to fetch from DB, fallback to auth data
+      try {
+        final res = await _supabase.client
+            .from('users')
+            .select()
+            .eq('id', authUser.id)
+            .maybeSingle();
+        if (res != null) return UserModel.fromJson(res);
+      } catch (_) {}
+
+      // Fallback: build from auth data so registration always succeeds
       return _userFromAuth(authUser, email: email, displayName: displayName);
     } catch (e) {
-      throw Exception(e.toString().replaceAll('Exception: ', ''));
+      final msg = e.toString();
+
+      // If user is already registered in Auth but missing from DB, recover them
+      if (msg.toLowerCase().contains('already registered') ||
+          msg.toLowerCase().contains('already exists')) {
+        try {
+          final signInRes = await _supabase.client.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
+          final authUser = signInRes.user;
+          if (authUser != null) {
+            await _upsertUserProfile(authUser.id, email, displayName);
+            return _userFromAuth(
+              authUser,
+              email: email,
+              displayName: displayName,
+            );
+          }
+        } catch (_) {
+          throw Exception('Mobile number already registered. Please login.');
+        }
+      }
+
+      // If migration schema error occurs but auth user might be created, try to proceed
+      if (msg.contains('schema_migrations') ||
+          msg.contains('supabase_migrations')) {
+        final authUser = _supabase.client.auth.currentUser;
+        if (authUser != null) {
+          await _upsertUserProfile(authUser.id, email, displayName);
+          return _userFromAuth(
+            authUser,
+            email: email,
+            displayName: displayName,
+          );
+        }
+      }
+      throw Exception(msg.replaceAll('Exception: ', ''));
     }
   }
 
@@ -193,12 +249,60 @@ class AuthRepository {
       final authUser = response.user;
       if (authUser == null) return null;
 
-      // Non-fatal: try to create profile row
+      // Try to create profile row
       await _upsertUserProfile(authUser.id, email, displayName);
 
+      // Try to fetch from DB, fallback to auth data
+      try {
+        final res = await _supabase.client
+            .from('users')
+            .select()
+            .eq('id', authUser.id)
+            .maybeSingle();
+        if (res != null) return UserModel.fromJson(res);
+      } catch (_) {}
+
+      // Fallback: build from auth data so registration always succeeds
       return _userFromAuth(authUser, email: email, displayName: displayName);
     } catch (e) {
-      throw Exception(e.toString().replaceAll('Exception: ', ''));
+      final msg = e.toString();
+
+      // If user is already registered in Auth but missing from DB, recover them
+      if (msg.toLowerCase().contains('already registered') ||
+          msg.toLowerCase().contains('already exists')) {
+        try {
+          final signInRes = await _supabase.client.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
+          final authUser = signInRes.user;
+          if (authUser != null) {
+            await _upsertUserProfile(authUser.id, email, displayName);
+            return _userFromAuth(
+              authUser,
+              email: email,
+              displayName: displayName,
+            );
+          }
+        } catch (_) {
+          throw Exception('Mobile number already registered. Please login.');
+        }
+      }
+
+      // If migration schema error occurs but auth user might be created, try to proceed
+      if (msg.contains('schema_migrations') ||
+          msg.contains('supabase_migrations')) {
+        final authUser = _supabase.client.auth.currentUser;
+        if (authUser != null) {
+          await _upsertUserProfile(authUser.id, email, displayName);
+          return _userFromAuth(
+            authUser,
+            email: email,
+            displayName: displayName,
+          );
+        }
+      }
+      throw Exception(msg.replaceAll('Exception: ', ''));
     }
   }
 

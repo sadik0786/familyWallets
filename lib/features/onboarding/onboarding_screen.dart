@@ -89,58 +89,61 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   },
                   itemBuilder: (context, index) {
                     final slide = _slides[index];
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 32.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 180,
-                            height: 180,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: AppColors.secondaryGradient,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primaryPink.withValues(
-                                    alpha: 0.3,
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20.h),
+                            Container(
+                              width: 160,
+                              height: 160,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: AppColors.secondaryGradient,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryPink.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    blurRadius: 30,
+                                    offset: Offset(0, 10),
                                   ),
-                                  blurRadius: 30,
-                                  offset: Offset(0, 10),
-                                ),
-                              ],
+                                ],
+                              ),
+                              child: Icon(
+                                _getIconData(slide['icon']!),
+                                size: 70,
+                                color: Colors.white,
+                              ),
                             ),
-                            child: Icon(
-                              _getIconData(slide['icon']!),
-                              size: 80,
-                              color: Colors.white,
+                            SizedBox(height: 32.h),
+                            Text(
+                              slide['title']!,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.bold,
+                                color: isDark
+                                    ? Colors.white
+                                    : Color(0xFF0F172A),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 48.h),
-                          Text(
-                            slide['title']!,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.outfit(
-                              fontSize: 26.sp,
-                              fontWeight: FontWeight.bold,
-                              color: isDark
-                                  ? Colors.white
-                                  : Color(0xFF0F172A),
+                            SizedBox(height: 16.h),
+                            Text(
+                              slide['desc']!,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                fontSize: 14.sp,
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[600],
+                                height: 1.6,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            slide['desc']!,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.outfit(
-                              fontSize: 15.sp,
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                              height: 1.6,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

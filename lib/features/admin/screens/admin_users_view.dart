@@ -128,10 +128,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                   ),
                 )
               : ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
                     final user = filteredUsers[index];
@@ -145,6 +142,7 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                     return Padding(
                       padding: EdgeInsets.only(bottom: 16.0),
                       child: _buildUserFeedRow(
+                        id: user['id']?.toString() ?? '',
                         name:
                             user['display_name']?.toString() ?? 'Unnamed User',
                         contact:
@@ -157,6 +155,46 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                         familyRole: user['family_role']?.toString(),
                         joinedAt: 'Joined $formattedDate',
                         familyName: user['family_name']?.toString(),
+                        onDelete: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: AppColors.darkCard,
+                              title: Text(
+                                'Delete User',
+                                style: GoogleFonts.outfit(color: Colors.white),
+                              ),
+                              content: Text(
+                                'Are you sure you want to completely delete ${user['display_name']}? This action cannot be undone and removes them from authentication and database.',
+                                style: TextStyle(color: Colors.grey[300]),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            final userId = user['id']?.toString();
+                            if (userId != null) {
+                              ref
+                                  .read(adminControllerProvider.notifier)
+                                  .deleteUser(userId);
+                            }
+                          }
+                        },
                       ),
                     );
                   },
@@ -167,12 +205,14 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
   }
 
   Widget _buildUserFeedRow({
+    required String id,
     required String name,
     required String contact,
     required String role,
     required String? familyRole,
     required String joinedAt,
     required String? familyName,
+    required VoidCallback onDelete,
   }) {
     final isSuperAdmin = role == 'super_admin';
     final isAdmin = role == 'admin' || familyRole == 'admin';
@@ -320,11 +360,27 @@ class _AdminUsersViewState extends ConsumerState<AdminUsersView>
                     ],
                   ),
                 ),
-                // Trailing Info (Date)
+                // Trailing Info (Delete & Date)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(height: 24.h), // Spacer for badge if any
+                    if (!isSuperAdmin) ...[
+                      SizedBox(height: 16.h), // Spacer for badge
+                      IconButton(
+                        onPressed: onDelete,
+                        icon: Icon(
+                          Icons.delete_outline_rounded,
+                          color: AppColors.error,
+                          size: 20,
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        tooltip: 'Delete User',
+                      ),
+                      SizedBox(height: 8.h),
+                    ] else ...[
+                      SizedBox(height: 24.h), // Spacer for badge if any
+                    ],
                     Text(
                       joinedAt,
                       style: GoogleFonts.outfit(

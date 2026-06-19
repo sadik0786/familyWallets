@@ -13,13 +13,14 @@ import '../features/auth/controllers/auth_controller.dart';
 import '../features/reports/screens/monthly_savings_view.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authControllerProvider);
+  final isRestored = ref.watch(authControllerProvider.select((s) => s.isSessionRestored));
+  final isLoggedIn = ref.watch(authControllerProvider.select((s) => s.user != null));
+  final isSuperAdmin = ref.watch(authControllerProvider.select((s) => 
+      s.user?.role == 'super_admin' || s.user?.email == 'alisadik99@gmail.com'));
 
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final isRestored = authState.isSessionRestored;
-      final isLoggedIn = authState.user != null;
 
       final isSplash = state.matchedLocation == '/splash';
       final isAuth =
@@ -34,13 +35,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (!isLoggedIn) {
         // Force login if trying to access secure pages
-        if (!isAuth) return '/onboarding';
+        if (!isAuth) return '/login';
         return null;
       }
-
-      final isSuperAdmin =
-          authState.user?.role == 'super_admin' ||
-          authState.user?.email == 'alisadik99@gmail.com';
 
       // If logged in, don't allow auth screens
       if (isSplash || isAuth) {
